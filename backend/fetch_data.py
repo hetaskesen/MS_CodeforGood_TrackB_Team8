@@ -1,226 +1,256 @@
 """
-Lemontree Data Fetcher — NYC 20-mile radius
-Fetches all food resources within 20 miles of NYC, cleans and saves to CSV + JSON.
+Lemontree API — NYC Food Resources Collector
 
-Usage:
-    python fetch_lemontree.py
+Efficient Strategy:
+- Fetch ALL NYC resources once via pagination (using region=NEW_YORK_CITY)
+- Partition them locally by their actual zipCode field
+- Export to JSON and CSV formats
 
-Outputs:
-    lemontree_nyc.csv   — flat table, one row per resource
-    lemontree_nyc.json  — full cleaned records as a list
 """
 
-import requests
-import pandas as pd
+import csv
 import json
-from datetime import datetime, timezone
+import time
+from datetime import datetime
+from pathlib import Path
 
-BASE_URL  = "https://platform.foodhelpline.org"
-NYC_LAT   = 40.7128
-NYC_LNG   = -74.0060
-MAX_MILES = 20
-METERS_PER_MILE = 1609.34
-PAGE_SIZE = 40
+import requests
+from tqdm import tqdm
 
+BASE_URL = "https://platform.foodhelpline.org/api/resources"
+OUTPUT_DIR = Path("data")
+BY_ZIP_DIR = OUTPUT_DIR / "by_zip"
+BY_ZIP_DIR.mkdir(parents=True, exist_ok=True)
 
-# ---------------------------------------------------------------------------
-# Fetch
-# ---------------------------------------------------------------------------
+# NYC zip code ranges to filter (based on your requirements)
+NYC_ZIP_RANGES = [
+    (10001, 10282),  # Manhattan
+    (10301, 10314),  # Staten Island (north)
+    (10451, 10475),  # Bronx
+    (11201, 11256),  # Brooklyn
+    (11004, 11109),  # Queens
+    (11351, 11697),  # Queens / Staten Island
+]
 
-def fetch_resources(lat: float, lng: float) -> list[dict]:
-    """Page through /api/resources sorted by distance, stop at MAX_MILES."""
-    cursor = None
-    total_fetched = 0
-    results = []
-
-    while True:
-        params = {
-            "lat": lat,
-            "lng": lng,
-            "sort": "distance",
-            "take": PAGE_SIZE,
-        }
-        if cursor:
-            params["cursor"] = cursor
-
-        resp = requests.get(f"{BASE_URL}/api/resources", params=params, timeout=15)
-        resp.raise_for_status()
-        data = resp.json().get("json", {})
-
-        resources = data.get("resources", [])
-        if not resources:
-            break
-
-        for r in resources:
-            dist_m = (r.get("travelSummary") or {}).get("distance")
-            dist_miles = dist_m / METERS_PER_MILE if dist_m is not None else None
-
-            # Stop as soon as we exceed the radius
-            if dist_miles is not None and dist_miles > MAX_MILES:
-                print(f"  Reached {dist_miles:.1f} miles — stopping.")
-                return results
-
-            results.append(r)
-
-        total_fetched += len(resources)
-        cursor = data.get("cursor")
-        print(f"  Fetched {total_fetched} resources so far...")
-
-        if not cursor:
-            break
-
-    return results
+SESSION = requests.Session()
+SESSION.headers["Accept"] = "application/json"
 
 
-# ---------------------------------------------------------------------------
-# Clean
-# ---------------------------------------------------------------------------
-
-def parse_dt(s):
-    if not s:
-        return None
+def is_nyc_zip(zipcode: str) -> bool:
+    """Check if a zip code is in our target NYC ranges."""
+    if not zipcode:
+        return False
     try:
-        return datetime.fromisoformat(str(s)).isoformat()
-    except Exception:
-        return str(s)
+        n = int(zipcode.strip())
+        return any(lo <= n <= hi for lo, hi in NYC_ZIP_RANGES)
+    except (ValueError, AttributeError):
+        return False
 
 
-def clean_resource(r: dict) -> dict:
-    """Flatten a raw resource dict into a clean record."""
-    dist_m = (r.get("travelSummary") or {}).get("distance")
-    dist_miles = round(dist_m / METERS_PER_MILE, 2) if dist_m is not None else None
-
-    # Usage limit — e.g. "1 per week"
-    usage = None
-    if r.get("usageLimitCount") and r.get("usageLimitIntervalUnit"):
-        usage = f"{r['usageLimitCount']} per {r.get('usageLimitIntervalCount', 1)} {r['usageLimitIntervalUnit']}"
-
-    # Next upcoming non-cancelled occurrence + upcoming list
-    next_open = None
-    next_confirmed = None
-    upcoming = []
-    for o in r.get("occurrences", []):
-        if o.get("skippedAt"):
-            continue
-        start = parse_dt(o.get("startTime"))
-        end   = parse_dt(o.get("endTime"))
-        upcoming.append({"start": start, "end": end, "confirmed": bool(o.get("confirmedAt"))})
-        if next_open is None:
-            next_open = start
-            next_confirmed = bool(o.get("confirmedAt"))
-
-    # Is open right now?
-    now = datetime.now(timezone.utc)
-    is_open_now = False
-    for o in r.get("occurrences", []):
-        if o.get("skippedAt"):
-            continue
-        try:
-            start = datetime.fromisoformat(str(o["startTime"]))
-            end   = datetime.fromisoformat(str(o["endTime"]))
-            start = start if start.tzinfo else start.replace(tzinfo=timezone.utc)
-            end   = end   if end.tzinfo   else end.replace(tzinfo=timezone.utc)
-            if start <= now <= end:
-                is_open_now = True
+def fetch_all_nyc_resources(take: int = 100) -> list:
+    """Fetch all NYC resources in one efficient paginated sweep."""
+    print("Fetching all NYC resources (single sweep using region=NEW_YORK_CITY)...\n")
+    
+    all_resources = []
+    seen_ids = set()
+    cursor = None
+    page = 0
+    
+    with tqdm(desc="Fetching pages", unit="page") as pbar:
+        while True:
+            params = {"region": "NEW_YORK_CITY", "take": take}
+            if cursor:
+                params["cursor"] = cursor
+            
+            try:
+                resp = SESSION.get(BASE_URL, params=params, timeout=30)
+                resp.raise_for_status()
+                data = resp.json()["json"]
+                
+                resources = data.get("resources", [])
+                if not resources:
+                    break
+                
+                # Deduplicate by ID
+                for resource in resources:
+                    if resource["id"] not in seen_ids:
+                        seen_ids.add(resource["id"])
+                        all_resources.append(resource)
+                
+                page += 1
+                pbar.set_postfix(
+                    page=page,
+                    unique_resources=len(all_resources),
+                    page_size=len(resources)
+                )
+                pbar.update(1)
+                
+                cursor = data.get("cursor")
+                if not cursor:
+                    break
+                
+                time.sleep(0.05)  # be polite to the API
+                
+            except Exception as e:
+                print(f"\n⚠️  Error fetching page {page + 1}: {e}")
                 break
-        except Exception:
-            pass
+    
+    print(f"\n✅ Fetched {len(all_resources)} unique resources across {page} pages\n")
+    return all_resources
 
-    tags  = ", ".join(t.get("name", "") for t in r.get("tags", []))
-    phone = (r.get("contacts") or [{}])[0].get("phone")
-    image = ((r.get("images") or [{}])[0]).get("url")
 
+def flatten_resource_for_csv(resource: dict) -> dict:
+    """Flatten a resource object into a single-level dict for CSV export."""
     return {
-        # Identity
-        "id":                    r.get("id"),
-        "name":                  r.get("name"),
-        "resource_type":         (r.get("resourceType") or {}).get("id"),
-        "status":                (r.get("resourceStatus") or {}).get("id"),
-        # Location
-        "address_street1":       r.get("addressStreet1"),
-        "address_street2":       r.get("addressStreet2"),
-        "city":                  r.get("city"),
-        "state":                 r.get("state"),
-        "zip_code":              r.get("zipCode"),
-        "latitude":              r.get("latitude"),
-        "longitude":             r.get("longitude"),
-        "timezone":              r.get("timezone"),
-        "distance_miles":        dist_miles,
-        # Contact
-        "phone":                 phone,
-        "website":               r.get("website"),
-        # Schedule
-        "open_by_appointment":   r.get("openByAppointment", False),
-        "is_open_now":           is_open_now,
-        "next_open":             next_open,
-        "next_confirmed":        next_confirmed,
-        "upcoming_occurrences":  json.dumps(upcoming),
-        # Usage limits
-        "usage_limit":           usage,
-        "usage_calendar_reset":  r.get("usageLimitCalendarReset"),
-        # Tags
-        "tags":                  tags,
-        # Quality signals
-        "confidence":            r.get("confidence"),
-        "rating_average":        r.get("ratingAverage"),
-        "review_count":          (r.get("_count") or {}).get("reviews", 0),
-        "subscriber_count":      (r.get("_count") or {}).get("resourceSubscriptions", 0),
-        # Media
-        "image_url":             image,
-        # Description
-        "description":           r.get("description"),
-        "description_es":        r.get("description_es"),
+        "id": resource.get("id"),
+        "name": resource.get("name"),
+        "description": resource.get("description", "")[:500] if resource.get("description") else "",  # truncate long descriptions
+        "resource_type": resource.get("resourceType", {}).get("name"),
+        "resource_type_id": resource.get("resourceType", {}).get("id"),
+        "status": resource.get("resourceStatus", {}).get("id"),
+        "address_street1": resource.get("addressStreet1"),
+        "address_street2": resource.get("addressStreet2"),
+        "city": resource.get("city"),
+        "state": resource.get("state"),
+        "zipCode": resource.get("zipCode"),
+        "latitude": resource.get("latitude"),
+        "longitude": resource.get("longitude"),
+        "timezone": resource.get("timezone"),
+        "website": resource.get("website"),
+        "phone": resource.get("contacts", [{}])[0].get("phone") if resource.get("contacts") else None,
+        "open_by_appointment": resource.get("openByAppointment"),
+        "appointment_required": resource.get("appointmentRequired"),
+        "accepting_new_clients": resource.get("acceptingNewClients"),
+        "usage_limit_count": resource.get("usageLimitCount"),
+        "usage_limit_interval": resource.get("usageLimitIntervalUnit"),
+        "confidence": resource.get("confidence"),
+        "rating_average": resource.get("ratingAverage"),
+        "review_count": resource.get("_count", {}).get("reviews"),
+        "subscription_count": resource.get("_count", {}).get("resourceSubscriptions"),
+        "regions_served": ",".join([r.get("id", "") for r in resource.get("regionsServed", [])]),
+        "tags": ",".join([t.get("name", "") for t in resource.get("tags", [])]),
+        "has_shifts": len(resource.get("shifts", [])) > 0,
+        "has_occurrences": len(resource.get("occurrences", [])) > 0,
     }
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+def export_to_csv(resources: list, output_path: Path):
+    """Export resources to CSV format."""
+    if not resources:
+        return
+    
+    flattened = [flatten_resource_for_csv(r) for r in resources]
+    
+    with open(output_path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=flattened[0].keys())
+        writer.writeheader()
+        writer.writerows(flattened)
+
 
 def main():
-    print(f"Fetching food resources within {MAX_MILES} miles of NYC...")
-    print(f"  Center: {NYC_LAT}, {NYC_LNG}\n")
-
-    raw = fetch_resources(NYC_LAT, NYC_LNG)
-    print(f"\nRaw records fetched: {len(raw)}")
-
-    cleaned = [clean_resource(r) for r in raw]
-
-    # Keep only PUBLISHED
-    published = [r for r in cleaned if r["status"] == "PUBLISHED"]
-    dropped   = len(cleaned) - len(published)
-    print(f"Published:           {len(published)}  (dropped {dropped} unpublished/removed)")
-
-    # Build DataFrame + type cleanup
-    df = pd.DataFrame(published)
-    df["distance_miles"]   = pd.to_numeric(df["distance_miles"],   errors="coerce")
-    df["confidence"]       = pd.to_numeric(df["confidence"],       errors="coerce")
-    df["rating_average"]   = pd.to_numeric(df["rating_average"],   errors="coerce")
-    df["review_count"]     = pd.to_numeric(df["review_count"],     errors="coerce").fillna(0).astype(int)
-    df["subscriber_count"] = pd.to_numeric(df["subscriber_count"], errors="coerce").fillna(0).astype(int)
-    df["is_open_now"]      = df["is_open_now"].astype(bool)
-    df = df.sort_values("distance_miles").reset_index(drop=True)
-
-    # Save outputs
-    df.to_csv("lemontree_nyc.csv", index=False)
-    with open("lemontree_nyc.json", "w") as f:
-        json.dump(published, f, indent=2, default=str)
-
-    print(f"\nSaved to: lemontree_nyc.csv + lemontree_nyc.json")
-
-    # Summary stats
-    print("\n--- Summary ---")
-    print(f"  Food pantries:  {(df['resource_type'] == 'FOOD_PANTRY').sum()}")
-    print(f"  Soup kitchens:  {(df['resource_type'] == 'SOUP_KITCHEN').sum()}")
-    print(f"  Open now:       {df['is_open_now'].sum()}")
-    print(f"  With phone:     {df['phone'].notna().sum()}")
-    print(f"  With website:   {df['website'].notna().sum()}")
-    print(f"  Cities covered: {df['city'].nunique()}")
-    print(f"\n  Top 10 cities by resource count:")
-    print(df["city"].value_counts().head(10).to_string())
-
-    return df
+    start_time = time.time()
+    
+    print("=" * 70)
+    print("Lemontree NYC Food Resources Collector")
+    print("=" * 70)
+    print(f"Target zip ranges: 10001-10282, 10301-10314, 10451-10475,")
+    print(f"                   11201-11256, 11004-11109, 11351-11697")
+    print(f"Output directory: {OUTPUT_DIR.resolve()}\n")
+    
+    # Step 1: Fetch all NYC resources
+    all_resources = fetch_all_nyc_resources()
+    
+    # Step 2: Write full dataset
+    print("Step 2: Saving all_resources.json...")
+    all_json_path = OUTPUT_DIR / "all_resources.json"
+    with open(all_json_path, "w", encoding="utf-8") as f:
+        json.dump(all_resources, f, ensure_ascii=False, indent=2, default=str)
+    print(f"✅ Saved {len(all_resources)} resources to {all_json_path}\n")
+    
+    # Step 3: Export full dataset to CSV
+    print("Step 3: Exporting all_resources.csv...")
+    all_csv_path = OUTPUT_DIR / "all_resources.csv"
+    export_to_csv(all_resources, all_csv_path)
+    print(f"✅ Exported to {all_csv_path}\n")
+    
+    # Step 4: Partition by zip code
+    print("Step 4: Partitioning by zip code...")
+    by_zip = {}
+    nyc_zip_count = 0
+    no_zip_count = 0
+    
+    for resource in all_resources:
+        zipcode = resource.get("zipCode", "").strip()
+        
+        if not zipcode:
+            no_zip_count += 1
+            continue
+        
+        # Only create files for NYC zip codes in our target ranges
+        if is_nyc_zip(zipcode):
+            nyc_zip_count += 1
+            if zipcode not in by_zip:
+                by_zip[zipcode] = []
+            by_zip[zipcode].append(resource)
+    
+    # Write per-zip JSON files
+    print(f"Writing {len(by_zip)} zip code files...")
+    for zipcode, resources in sorted(by_zip.items()):
+        zip_file = BY_ZIP_DIR / f"{zipcode}.json"
+        with open(zip_file, "w", encoding="utf-8") as f:
+            json.dump(resources, f, ensure_ascii=False, indent=2, default=str)
+    
+    # Write per-zip CSV files
+    print(f"Exporting {len(by_zip)} zip code CSV files...")
+    for zipcode, resources in sorted(by_zip.items()):
+        csv_file = BY_ZIP_DIR / f"{zipcode}.csv"
+        export_to_csv(resources, csv_file)
+    
+    print(f"✅ Created {len(by_zip)} zip code files (JSON + CSV)\n")
+    
+    # Step 5: Create metadata summary
+    runtime = time.time() - start_time
+    meta = {
+        "generated_at": datetime.now().isoformat(),
+        "total_resources_fetched": len(all_resources),
+        "resources_with_nyc_zip": nyc_zip_count,
+        "resources_with_no_zip": no_zip_count,
+        "zip_codes_with_data": {
+            zipcode: len(resources)
+            for zipcode, resources in sorted(by_zip.items())
+        },
+        "runtime_seconds": round(runtime, 1),
+    }
+    
+    meta_path = OUTPUT_DIR / "meta.json"
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+    
+    # Final summary
+    print("=" * 70)
+    print("✅ COMPLETE")
+    print("=" * 70)
+    print(f"Total resources fetched:     {len(all_resources)}")
+    print(f"Resources with NYC zip:      {nyc_zip_count}")
+    print(f"Resources missing zip:       {no_zip_count}")
+    print(f"Zip codes with data:         {len(by_zip)}")
+    print(f"Runtime:                     {runtime:.1f}s")
+    print(f"\nFiles created:")
+    print(f"  📄 {all_json_path}")
+    print(f"  📊 {all_csv_path}")
+    print(f"  📁 {BY_ZIP_DIR}/*.json ({len(by_zip)} files)")
+    print(f"  📁 {BY_ZIP_DIR}/*.csv ({len(by_zip)} files)")
+    print(f"  📋 {meta_path}")
+    
+    # Top zip codes by resource count
+    if by_zip:
+        print(f"\n🔝 Top 10 zip codes by resource count:")
+        top_zips = sorted(by_zip.items(), key=lambda x: len(x[1]), reverse=True)[:10]
+        for zipcode, resources in top_zips:
+            print(f"  {zipcode}: {len(resources)} resources")
+    
+    print("=" * 70)
 
 
 if __name__ == "__main__":
-    df = main()
+    main()
