@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./theme.css";
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap");
 
@@ -12,6 +13,11 @@ body {
   font-family: "DM Sans", system-ui, sans-serif;
   background: #faf8f4;
   color: #1a1a2e;
+}
+
+::selection {
+  background: rgb(var(--rgb-leaf-200) / 0.9);
+  color: rgb(var(--rgb-ink-900));
 }
 
 /* Leaflet overrides */
@@ -52,15 +58,18 @@ body {
 /* Pulse animation for donor pins */
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 4px rgba(29, 158, 117, 0.3),
+    box-shadow:
+      0 0 0 4px rgba(29, 158, 117, 0.3),
       0 2px 8px rgba(0, 0, 0, 0.15);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(29, 158, 117, 0.08),
+    box-shadow:
+      0 0 0 10px rgba(29, 158, 117, 0.08),
       0 2px 8px rgba(0, 0, 0, 0.15);
   }
   100% {
-    box-shadow: 0 0 0 4px rgba(29, 158, 117, 0.3),
+    box-shadow:
+      0 0 0 4px rgba(29, 158, 117, 0.3),
       0 2px 8px rgba(0, 0, 0, 0.15);
   }
 }

@@ -1,0 +1,123 @@
+:root {
+  /* Base channels */
+  --theme-white-rgb: 255 255 255;
+  --theme-black-rgb: 0 0 0;
+
+  /* Map */
+  --theme-map-base-rgb: 234 230 218;
+
+  /* Navbar */
+  --theme-navbar-bg-rgb: 253 233 122;
+  --theme-navbar-text-rgb: 61 34 0;
+  --theme-navbar-active-pill-rgb: 253 233 122;
+  --theme-navbar-avatar-text-rgb: 160 120 0;
+  --theme-navbar-signout-bg-rgb: 255 255 255;
+
+  /* Surfaces */
+  --theme-surface-canvas-rgb: 250 248 244;
+  --theme-surface-panel-rgb: 255 255 255;
+  --theme-surface-subtle-rgb: 250 248 244;
+  --theme-surface-hover-rgb: 242 239 232;
+  --theme-surface-elevated-rgb: 232 228 216;
+  --theme-surface-track-rgb: 232 228 216;
+
+  /* Text */
+  --theme-text-primary-rgb: 26 26 46;
+  --theme-text-secondary-rgb: 156 149 136;
+  --theme-text-muted-rgb: 184 178 163;
+  --theme-text-subtle-rgb: 212 207 192;
+  --theme-text-inverse-rgb: 255 255 255;
+
+  /* Brand and buttons */
+  --theme-brand-primary-rgb: 15 110 66;
+  --theme-brand-emphasis-rgb: 13 92 56;
+  --theme-brand-strong-rgb: 11 74 45;
+  --theme-brand-soft-rgb: 240 250 244;
+  --theme-brand-subtle-rgb: 163 228 193;
+
+  /* Status */
+  --theme-status-success-rgb: 29 158 117;
+  --theme-status-warning-rgb: 239 159 39;
+  --theme-status-danger-rgb: 226 75 74;
+
+  /* Critical surfaces/text */
+  --theme-critical-subtle-rgb: 254 242 242;
+  --theme-critical-soft-rgb: 254 226 226;
+  --theme-critical-muted-rgb: 248 113 113;
+  --theme-critical-rgb: 220 38 38;
+  --theme-critical-emphasis-rgb: 185 28 28;
+  --theme-critical-strong-rgb: 153 27 27;
+
+  /* Borders */
+  --theme-border-subtle-rgb: 232 228 216;
+  --theme-border-accent-rgb: 15 110 66;
+  --theme-border-critical-rgb: 220 38 38;
+
+  /* Semantic colors for inline styles and chart config */
+  --theme-map-base: rgb(var(--theme-map-base-rgb));
+  --theme-surface-panel: rgb(var(--theme-surface-panel-rgb));
+  --theme-surface-subtle: rgb(var(--theme-surface-subtle-rgb));
+  --theme-surface-elevated: rgb(var(--theme-surface-elevated-rgb));
+  --theme-text-primary: rgb(var(--theme-text-primary-rgb));
+  --theme-text-secondary: rgb(var(--theme-text-secondary-rgb));
+  --theme-status-success: rgb(var(--theme-status-success-rgb));
+  --theme-status-warning: rgb(var(--theme-status-warning-rgb));
+  --theme-status-danger: rgb(var(--theme-status-danger-rgb));
+  --theme-shadow-rgb: var(--theme-black-rgb);
+  --theme-navbar-bg: rgb(var(--theme-navbar-bg-rgb));
+  --theme-navbar-text: rgb(var(--theme-navbar-text-rgb));
+  --theme-navbar-active-pill: rgb(var(--theme-navbar-active-pill-rgb));
+  --theme-navbar-avatar-text: rgb(var(--theme-navbar-avatar-text-rgb));
+  --theme-navbar-signout-bg: rgb(var(--theme-navbar-signout-bg-rgb) / 0.5);
+
+  /* Backward-compatible aliases for existing component usage */
+  --rgb-white: var(--theme-white-rgb);
+  --rgb-black: var(--theme-black-rgb);
+  --rgb-ink-900: var(--theme-text-primary-rgb);
+  --rgb-map-base: var(--theme-map-base-rgb);
+
+  --rgb-leaf-50: var(--theme-brand-soft-rgb);
+  --rgb-leaf-100: var(--theme-brand-subtle-rgb);
+  --rgb-leaf-200: var(--theme-brand-subtle-rgb);
+  --rgb-leaf-300: var(--theme-status-success-rgb);
+  --rgb-leaf-400: var(--theme-status-success-rgb);
+  --rgb-leaf-500: var(--theme-status-success-rgb);
+  --rgb-leaf-600: var(--theme-brand-primary-rgb);
+  --rgb-leaf-700: var(--theme-brand-emphasis-rgb);
+  --rgb-leaf-800: var(--theme-brand-strong-rgb);
+  --rgb-leaf-900: var(--theme-brand-strong-rgb);
+
+  --rgb-sand-50: var(--theme-surface-canvas-rgb);
+  --rgb-sand-100: var(--theme-surface-hover-rgb);
+  --rgb-sand-200: var(--theme-border-subtle-rgb);
+  --rgb-sand-300: var(--theme-text-subtle-rgb);
+  --rgb-sand-400: var(--theme-text-muted-rgb);
+  --rgb-sand-500: var(--theme-text-secondary-rgb);
+
+  --rgb-coral-400: var(--theme-status-danger-rgb);
+  --rgb-coral-500: var(--theme-critical-emphasis-rgb);
+  --rgb-amber-400: var(--theme-status-warning-rgb);
+  --rgb-amber-500: var(--theme-status-warning-rgb);
+
+  --rgb-red-50: var(--theme-critical-subtle-rgb);
+  --rgb-red-100: var(--theme-critical-soft-rgb);
+  --rgb-red-400: var(--theme-critical-muted-rgb);
+  --rgb-red-600: var(--theme-critical-rgb);
+  --rgb-red-700: var(--theme-critical-emphasis-rgb);
+  --rgb-red-800: var(--theme-critical-strong-rgb);
+
+  --rgb-rating-good: var(--theme-status-success-rgb);
+  --rgb-rating-mid: var(--theme-status-warning-rgb);
+  --rgb-rating-poor: var(--theme-status-danger-rgb);
+
+  --color-white: var(--theme-surface-panel);
+  --color-ink-900: var(--theme-text-primary);
+  --color-map-base: var(--theme-map-base);
+  --color-sand-200: rgb(var(--rgb-sand-200));
+  --color-sand-300: rgb(var(--rgb-sand-300));
+  --color-sand-400: rgb(var(--rgb-sand-400));
+  --color-sand-500: rgb(var(--rgb-sand-500));
+  --color-rating-good: var(--theme-status-success);
+  --color-rating-mid: var(--theme-status-warning);
+  --color-rating-poor: var(--theme-status-danger);
+}

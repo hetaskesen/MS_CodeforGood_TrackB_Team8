@@ -17,7 +17,7 @@ export default function ModeToggle({ activeMode, onModeChange }) {
             px-5 py-2.5 text-sm font-medium transition-all duration-300 border-none cursor-pointer
             ${
               activeMode === mode.id
-                ? "bg-leaf-600 text-white"
+                ? "bg-leaf-600 text-sand-100"
                 : "bg-transparent text-sand-500 hover:bg-sand-100 hover:text-sand-800"
             }
           `}

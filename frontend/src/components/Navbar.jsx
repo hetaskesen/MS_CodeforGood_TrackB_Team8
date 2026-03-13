@@ -6,7 +6,11 @@ const modes = [
   { id: "government", label: "Government", icon: "" },
 ];
 
-export default function Navbar({ activeMode, onModeChange, userName = "User" }) {
+export default function Navbar({
+  activeMode,
+  onModeChange,
+  userName = "User",
+}) {
   const initials = userName
     .split(" ")
     .map((n) => n[0])
@@ -17,7 +21,7 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
   return (
     <nav
       style={{
-        background: "#FDE97A",
+        background: "var(--theme-navbar-bg, #FDE97A)",
         display: "grid",
         gridTemplateColumns: "1fr auto 1fr",
         alignItems: "center",
@@ -48,10 +52,10 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
         style={{
           display: "flex",
           gap: "3px",
-          background: "#fff",
+          background: "var(--theme-surface-panel, #fff)",
           borderRadius: "10px",
           padding: "3px",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+          boxShadow: "0 1px 4px rgb(var(--theme-shadow-rgb) / 0.08)",
         }}
       >
         {modes.map((mode) => (
@@ -65,13 +69,19 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
               fontWeight: activeMode === mode.id ? 700 : 500,
               border: "none",
               cursor: "pointer",
-              background: activeMode === mode.id ? "#FDE97A" : "transparent",
-              color: "#3D2200",
+              background:
+                activeMode === mode.id
+                  ? "var(--theme-navbar-active-pill, #FDE97A)"
+                  : "transparent",
+              color: "var(--theme-navbar-text, #3D2200)",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               whiteSpace: "nowrap",
-              boxShadow: activeMode === mode.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+              boxShadow:
+                activeMode === mode.id
+                  ? "0 1px 3px rgb(var(--theme-shadow-rgb) / 0.1)"
+                  : "none",
               transition: "all 0.2s ease",
               fontFamily: "DM Sans, system-ui, sans-serif",
             }}
@@ -83,12 +93,19 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
       </div>
 
       {/* RIGHT — Name + Avatar + Sign out */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "flex-end" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          justifyContent: "flex-end",
+        }}
+      >
         <span
           style={{
             fontSize: "13px",
             fontWeight: 500,
-            color: "#3D2200",
+            color: "var(--theme-navbar-text, #3D2200)",
             whiteSpace: "nowrap",
           }}
         >
@@ -100,14 +117,14 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
             width: "34px",
             height: "34px",
             borderRadius: "50%",
-            background: "#fff",
+            background: "var(--theme-surface-panel, #fff)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: "12px",
             fontWeight: 700,
-            color: "#a07800",
-            border: "2px solid rgba(0,0,0,0.08)",
+            color: "var(--theme-navbar-avatar-text, #a07800)",
+            border: "2px solid rgb(var(--theme-shadow-rgb) / 0.08)",
             flexShrink: 0,
           }}
         >
@@ -122,9 +139,9 @@ export default function Navbar({ activeMode, onModeChange, userName = "User" }) 
             borderRadius: "8px",
             cursor: "pointer",
             whiteSpace: "nowrap",
-            border: "1.5px solid rgba(0,0,0,0.2)",
-            background: "rgba(255,255,255,0.5)",
-            color: "#3D2200",
+            border: "1.5px solid rgb(var(--theme-shadow-rgb) / 0.2)",
+            background: "var(--theme-navbar-signout-bg, rgba(255,255,255,0.5))",
+            color: "var(--theme-navbar-text, #3D2200)",
             fontFamily: "DM Sans, system-ui, sans-serif",
           }}
         >
