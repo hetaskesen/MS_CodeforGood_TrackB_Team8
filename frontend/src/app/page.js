@@ -6,138 +6,113 @@ import Navbar from "@/components/Navbar";
 import OperatorPanel from "@/components/OperatorPanel";
 import DonorPanel from "@/components/DonorPanel";
 import GovernmentPanel from "@/components/GovernmentPanel";
+import { resources, donorPortfolio, ratingColor } from "@/lib/data";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
+const DEFAULT_RESOURCE = resources.find((r) => r.id === "res_002");
+
 export default function Home() {
   const [mode, setMode] = useState("operator");
-  const [selectedResource, setSelectedResource] = useState(null);
-  const [panelOpen, setPanelOpen] = useState(false);
+  const [selectedResource, setSelectedResource] = useState(DEFAULT_RESOURCE);
   const [panelKey, setPanelKey] = useState(0);
   const mapInvalidateRef = useRef(null);
 
-  const invalidateMap = useCallback(() => {
+  const handleModeChange = useCallback((newMode) => {
+    setSelectedResource(newMode === "operator" ? DEFAULT_RESOURCE : null);
+    setMode(newMode);
+    setPanelKey((k) => k + 1);
     setTimeout(() => {
       if (mapInvalidateRef.current) mapInvalidateRef.current();
-    }, 520);
+    }, 100);
   }, []);
 
-  const handleModeChange = useCallback(
-    (newMode) => {
-      setPanelOpen(false);
-      setSelectedResource(null);
-      setMode(newMode);
-      setPanelKey((k) => k + 1);
-      invalidateMap();
-    },
-    [invalidateMap],
-  );
-
-  const handleResourceSelect = useCallback(
-    (resource) => {
-      setSelectedResource(resource);
-      setPanelOpen(true);
-      setPanelKey((k) => k + 1);
-      invalidateMap();
-    },
-    [invalidateMap],
-  );
-
-  const handleOpenPanel = useCallback(() => {
-    setPanelOpen(true);
+  const handleResourceSelect = useCallback((resource) => {
+    setSelectedResource(resource);
     setPanelKey((k) => k + 1);
-    invalidateMap();
-  }, [invalidateMap]);
+  }, []);
 
-  const handleClosePanel = useCallback(() => {
-    setPanelOpen(false);
-    invalidateMap();
-  }, [invalidateMap]);
+  // Top-header content (dashboard views only)
+  const entityName =
+    mode === "operator"
+      ? selectedResource?.name ?? "Select a pantry"
+      : donorPortfolio.donorName;
 
-  const showPanel =
-    panelOpen &&
-    ((mode === "operator" && selectedResource) ||
-      mode === "donor" ||
-      mode === "government");
+  const entityBadge =
+    mode === "operator" && selectedResource
+      ? {
+          label: `${
+            selectedResource.rating >= 3.8
+              ? "Good"
+              : selectedResource.rating >= 3.0
+              ? "Fair"
+              : "Needs attention"
+          } · ${selectedResource.rating}`,
+          color: ratingColor(selectedResource.rating),
+        }
+      : mode === "donor"
+      ? { label: "Active funder", color: "#1D9E75" }
+      : null;
 
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#eae6da]">
-      {/* ---- Navbar at the top ---- */}
-      <Navbar
-        activeMode={mode}
-        onModeChange={handleModeChange}
-        userName="sarah M."
-      />
+    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#f5f3ef]">
+      {/* ── Navbar at the top ── */}
+      <Navbar activeMode={mode} onModeChange={handleModeChange} userName="Sarah M." />
 
-      {/* ---- Map + Panel row (fills remaining height) ---- */}
-      <div className="flex flex-1 min-h-0 overflow-hidden">
-        {/* ---- Map (transitions from 100% to 55%) ---- */}
-        <div
-          className="relative h-full min-h-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{ width: showPanel ? "55%" : "100%" }}
-        >
-          <MapView
-            mode={mode}
-            panelOpen={showPanel}
-            onResourceSelect={handleResourceSelect}
-            onInvalidateRef={(fn) => {
-              mapInvalidateRef.current = fn;
-            }}
-          />
-
-          {/* CTA button — visible when panel is closed */}
-          {!showPanel && (
-            <button
-              onClick={mode === "operator" ? undefined : handleOpenPanel}
-              className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000]
-                px-6 py-3 bg-white/95 backdrop-blur-sm rounded-2xl border border-sand-200
-                text-sm font-medium shadow-sm
-                hover:bg-white hover:shadow-md transition-all cursor-pointer
-                ${mode === "operator" ? "text-sand-400 pointer-events-none" : "text-leaf-700"}
-              `}
+      {/* ── Main content area (fills remaining height) ── */}
+      <div className="flex flex-1 min-w-0 overflow-hidden">
+        {mode === "government" ? (
+          /* ── Government: 40% panel + 60% map ── */
+          <div className="flex h-full w-full">
+            <div
+              className="flex flex-col h-full overflow-hidden"
+              style={{ width: "40%" }}
             >
-              {mode === "operator"
-                ? "Click a pin to view insights"
-                : mode === "donor"
-                  ? "View impact report →"
-                  : "View gap analysis →"}
-            </button>
-          )}
+              <div className="flex-1 overflow-y-auto" key={panelKey}>
+                <GovernmentPanel />
+              </div>
+            </div>
 
-          <div className="absolute bottom-4 left-4 z-[800] bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 text-xs text-sand-500 border border-sand-200">
-            <span className="font-semibold text-leaf-600">Lemontree</span>{" "}
-            Insights
+            <div className="w-px bg-sand-200 shrink-0" />
+
+            <div className="relative flex-1 h-full">
+              <MapView
+                mode={mode}
+                onResourceSelect={handleResourceSelect}
+                onInvalidateRef={(fn) => {
+                  mapInvalidateRef.current = fn;
+                }}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          /* ── Dashboard: full-screen, no map ── */
+          <div className="flex flex-col h-full w-full">
+            {/* Top header */}
+            <div className="flex items-center justify-between px-8 py-4 border-b border-sand-100 bg-white shrink-0">
+              <h1 className="text-xl font-semibold text-sand-800">{entityName}</h1>
+              {entityBadge && (
+                <span
+                  className="text-sm font-semibold px-4 py-1.5 rounded-full"
+                  style={{
+                    backgroundColor: entityBadge.color + "15",
+                    color: entityBadge.color,
+                  }}
+                >
+                  {entityBadge.label}
+                </span>
+              )}
+            </div>
 
-        {/* ---- Data panel (transitions from 0% to 45%) ---- */}
-        <div
-          className="relative h-full min-h-0 bg-white border-l border-sand-200 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{
-            width: showPanel ? "45%" : "0%",
-            opacity: showPanel ? 1 : 0,
-          }}
-        >
-          {showPanel && (
-            <div className="h-full overflow-y-auto" key={panelKey}>
-              <button
-                onClick={handleClosePanel}
-                className="sticky top-0 right-0 float-right m-4 z-10 w-8 h-8 flex items-center justify-center
-                  rounded-full bg-sand-100 text-sand-500 hover:bg-sand-200 hover:text-sand-800
-                  transition-colors cursor-pointer text-sm"
-                aria-label="Close panel"
-              >
-                ✕
-              </button>
-
-              {mode === "operator" && selectedResource && (
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto" key={panelKey}>
+              {mode === "operator" && (
                 <OperatorPanel resource={selectedResource} />
               )}
               {mode === "donor" && <DonorPanel />}
-              {mode === "government" && <GovernmentPanel />}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
