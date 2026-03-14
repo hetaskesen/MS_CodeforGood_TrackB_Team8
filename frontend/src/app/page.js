@@ -169,8 +169,6 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'DM Sans', system-ui, sans-serif", background: "linear-gradient(135deg, #faf9f6 0%, #f0ebe3 50%, #e8f4f0 100%)" }}>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet"/>
-
       {/* HEADER - Matching Lemontree navbar */}
       <header style={{
         background: "#FDE97A",

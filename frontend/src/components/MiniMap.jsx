@@ -25,8 +25,8 @@ export default function MiniMap({ lat, lng, name, rating, address }) {
     });
 
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-      { maxZoom: 19, opacity: 0.92 }
+      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      { maxZoom: 19 }
     ).addTo(map);
 
     const color = ratingColor(rating);
