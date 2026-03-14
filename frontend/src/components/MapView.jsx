@@ -85,6 +85,7 @@ export default function MapView({
     }
 
     return () => {
+      if (onInvalidateRef) onInvalidateRef(() => {}); // clear stale ref before teardown
       map.remove();
       mapRef.current = null;
     };

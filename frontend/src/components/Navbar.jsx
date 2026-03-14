@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const modes = [
   { id: "operator", label: "Pantry operator", icon: "" },
   { id: "donor", label: "Donor / Funder", icon: "" },
@@ -32,7 +34,7 @@ export default function Navbar({
         position: "relative",
       }}
     >
-      {/* LEFT — Logo + Wordmark */}
+      {/* LEFT — Logo + Wordmark + Explore link */}
       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
         <img
           src="https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg"
@@ -45,6 +47,39 @@ export default function Navbar({
           style={{ height: "20px", marginLeft: "-6px" }}
           onError={(e) => (e.target.style.display = "none")}
         />
+        <div
+          style={{
+            width: "1px",
+            height: "20px",
+            background: "rgba(61,34,0,0.15)",
+            marginLeft: "10px",
+            marginRight: "4px",
+          }}
+        />
+        <Link
+          href="/dashboard/explore"
+          style={{
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "var(--theme-navbar-text, #3D2200)",
+            textDecoration: "none",
+            padding: "5px 12px",
+            borderRadius: "8px",
+            background: "rgba(255,255,255,0.45)",
+            border: "1.5px solid rgba(61,34,0,0.12)",
+            whiteSpace: "nowrap",
+            transition: "background 0.15s",
+            fontFamily: "DM Sans, system-ui, sans-serif",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "rgba(255,255,255,0.75)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "rgba(255,255,255,0.45)")
+          }
+        >
+          🔍 Explore resources
+        </Link>
       </div>
 
       {/* CENTER — Mode Toggles */}
