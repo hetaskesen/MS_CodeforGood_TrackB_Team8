@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getBorough } from "@/lib/zipToBorough";
+import Footer from "@/components/Footer";
 import {
   Search, MapPin, Calendar, Users, DoorOpen, ArrowLeft, X,
   Star, Clock, ArrowUpDown, ChevronLeft, ChevronRight,
@@ -928,6 +929,7 @@ function ExploreContent() {
             </button>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -949,7 +951,7 @@ function ExploreContent() {
 
   // ── Main view ──────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-screen bg-[#f5f3ef]">
+    <div className="flex flex-col min-h-screen bg-[#f5f3ef]">
       <TopNav />
 
       <ExploreFilters
@@ -1010,6 +1012,8 @@ function ExploreContent() {
         totalCount={totalCount}
         onPageChange={setPage}
       />
+
+      <Footer />
 
       {selectedResource && (
         <ResourceDetail

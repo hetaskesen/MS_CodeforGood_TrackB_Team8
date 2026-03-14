@@ -10,6 +10,7 @@ import {
   Cell,
 } from "recharts";
 import { demandEstimates, censusTracts } from "@/lib/data";
+import Footer from "./Footer";
 
 // Simulated 6-months-ago gap zone count for trend indicator
 const GAP_ZONES_6MO_AGO = 6;
@@ -243,6 +244,7 @@ export default function GovernmentPanel() {
       </div>
 
       <div className="h-5" />
+      <Footer />
     </div>
   );
 }

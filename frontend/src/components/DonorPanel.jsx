@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Footer from "./Footer";
 import {
   LineChart,
   Line,
@@ -294,6 +295,7 @@ export default function DonorPanel() {
       </div>
 
       <div className="h-8" />
+      <Footer />
     </div>
   );
 }

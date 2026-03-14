@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import Footer from "./Footer";
 import {
   LineChart,
   Line,
@@ -637,6 +638,7 @@ export default function OperatorPanel() {
       )}
 
       <div className="h-8" />
+      <Footer />
     </div>
   );
 }
