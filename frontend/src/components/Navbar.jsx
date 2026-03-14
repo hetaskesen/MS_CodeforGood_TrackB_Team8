@@ -2,7 +2,7 @@
 
 const modes = [
   { id: "operator", label: "Pantry operator", icon: "" },
-  { id: "donor", label: "Donor / funder", icon: "" },
+  { id: "donor", label: "Donor / Funder", icon: "" },
   { id: "government", label: "Government", icon: "" },
 ];
 
