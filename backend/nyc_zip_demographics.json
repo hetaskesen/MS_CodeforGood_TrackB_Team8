@@ -1,0 +1,2368 @@
+[
+  {
+    "zip": "10001",
+    "total_population": 30511,
+    "poverty_rate_pct": 15.08,
+    "median_household_income": 129852,
+    "food_insecurity_est": 6442,
+    "race": {
+      "white_non_hispanic": 14445,
+      "black": 3372,
+      "hispanic": 5173,
+      "asian": 6010
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10002",
+    "total_population": 76873,
+    "poverty_rate_pct": 27.93,
+    "median_household_income": 48386,
+    "food_insecurity_est": 30063,
+    "race": {
+      "white_non_hispanic": 20819,
+      "black": 6517,
+      "hispanic": 18319,
+      "asian": 27793
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "10003",
+    "total_population": 53560,
+    "poverty_rate_pct": 12.62,
+    "median_household_income": 154262,
+    "food_insecurity_est": 9460,
+    "race": {
+      "white_non_hispanic": 34241,
+      "black": 2445,
+      "hispanic": 5437,
+      "asian": 8897
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10004",
+    "total_population": 3711,
+    "poverty_rate_pct": 3.5,
+    "median_household_income": 250001,
+    "food_insecurity_est": 181,
+    "race": {
+      "white_non_hispanic": 2080,
+      "black": 194,
+      "hispanic": 401,
+      "asian": 880
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10005",
+    "total_population": 9439,
+    "poverty_rate_pct": 4.26,
+    "median_household_income": 190233,
+    "food_insecurity_est": 562,
+    "race": {
+      "white_non_hispanic": 6006,
+      "black": 436,
+      "hispanic": 1005,
+      "asian": 1295
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10006",
+    "total_population": 4096,
+    "poverty_rate_pct": 14.62,
+    "median_household_income": 190170,
+    "food_insecurity_est": 838,
+    "race": {
+      "white_non_hispanic": 2596,
+      "black": 233,
+      "hispanic": 172,
+      "asian": 1013
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10007",
+    "total_population": 7406,
+    "poverty_rate_pct": 2.22,
+    "median_household_income": 250001,
+    "food_insecurity_est": 230,
+    "race": {
+      "white_non_hispanic": 5180,
+      "black": 332,
+      "hispanic": 711,
+      "asian": 799
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10009",
+    "total_population": 60209,
+    "poverty_rate_pct": 19.66,
+    "median_household_income": 92876,
+    "food_insecurity_est": 16571,
+    "race": {
+      "white_non_hispanic": 31257,
+      "black": 4679,
+      "hispanic": 14213,
+      "asian": 7171
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10010",
+    "total_population": 30702,
+    "poverty_rate_pct": 10.95,
+    "median_household_income": 144969,
+    "food_insecurity_est": 4704,
+    "race": {
+      "white_non_hispanic": 18749,
+      "black": 2537,
+      "hispanic": 2772,
+      "asian": 4659
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10011",
+    "total_population": 48277,
+    "poverty_rate_pct": 9.35,
+    "median_household_income": 145987,
+    "food_insecurity_est": 6316,
+    "race": {
+      "white_non_hispanic": 32113,
+      "black": 1824,
+      "hispanic": 6331,
+      "asian": 5051
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10012",
+    "total_population": 21426,
+    "poverty_rate_pct": 10.71,
+    "median_household_income": 137106,
+    "food_insecurity_est": 3212,
+    "race": {
+      "white_non_hispanic": 14164,
+      "black": 706,
+      "hispanic": 1820,
+      "asian": 3869
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10013",
+    "total_population": 27219,
+    "poverty_rate_pct": 12.31,
+    "median_household_income": 161154,
+    "food_insecurity_est": 4692,
+    "race": {
+      "white_non_hispanic": 14019,
+      "black": 823,
+      "hispanic": 1791,
+      "asian": 8622
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10016",
+    "total_population": 52971,
+    "poverty_rate_pct": 10.78,
+    "median_household_income": 140381,
+    "food_insecurity_est": 7996,
+    "race": {
+      "white_non_hispanic": 29676,
+      "black": 2202,
+      "hispanic": 6409,
+      "asian": 11017
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10017",
+    "total_population": 15297,
+    "poverty_rate_pct": 10.01,
+    "median_household_income": 136705,
+    "food_insecurity_est": 2143,
+    "race": {
+      "white_non_hispanic": 9828,
+      "black": 534,
+      "hispanic": 1132,
+      "asian": 2508
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10018",
+    "total_population": 8559,
+    "poverty_rate_pct": 15.59,
+    "median_household_income": 145958,
+    "food_insecurity_est": 1867,
+    "race": {
+      "white_non_hispanic": 3496,
+      "black": 845,
+      "hispanic": 1182,
+      "asian": 2415
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10019",
+    "total_population": 44942,
+    "poverty_rate_pct": 10.16,
+    "median_household_income": 128559,
+    "food_insecurity_est": 6389,
+    "race": {
+      "white_non_hispanic": 23919,
+      "black": 2967,
+      "hispanic": 7991,
+      "asian": 7386
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10020",
+    "total_population": 0,
+    "poverty_rate_pct": 0,
+    "median_household_income": -666666666,
+    "food_insecurity_est": 0,
+    "race": {
+      "white_non_hispanic": 0,
+      "black": 0,
+      "hispanic": 0,
+      "asian": 0
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10021",
+    "total_population": 39868,
+    "poverty_rate_pct": 4.72,
+    "median_household_income": 158677,
+    "food_insecurity_est": 2634,
+    "race": {
+      "white_non_hispanic": 30720,
+      "black": 328,
+      "hispanic": 3288,
+      "asian": 4136
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10022",
+    "total_population": 34049,
+    "poverty_rate_pct": 6.99,
+    "median_household_income": 172026,
+    "food_insecurity_est": 3334,
+    "race": {
+      "white_non_hispanic": 24620,
+      "black": 725,
+      "hispanic": 2220,
+      "asian": 4539
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10023",
+    "total_population": 69455,
+    "poverty_rate_pct": 8.44,
+    "median_household_income": 159874,
+    "food_insecurity_est": 8204,
+    "race": {
+      "white_non_hispanic": 43821,
+      "black": 2992,
+      "hispanic": 7384,
+      "asian": 11588
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10024",
+    "total_population": 63115,
+    "poverty_rate_pct": 8.24,
+    "median_household_income": 181560,
+    "food_insecurity_est": 7279,
+    "race": {
+      "white_non_hispanic": 47936,
+      "black": 2111,
+      "hispanic": 6304,
+      "asian": 3869
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10025",
+    "total_population": 93065,
+    "poverty_rate_pct": 15.58,
+    "median_household_income": 108940,
+    "food_insecurity_est": 20302,
+    "race": {
+      "white_non_hispanic": 49420,
+      "black": 9459,
+      "hispanic": 20082,
+      "asian": 9224
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10026",
+    "total_population": 37123,
+    "poverty_rate_pct": 17.73,
+    "median_household_income": 81244,
+    "food_insecurity_est": 9216,
+    "race": {
+      "white_non_hispanic": 9338,
+      "black": 16089,
+      "hispanic": 7274,
+      "asian": 2208
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10027",
+    "total_population": 63885,
+    "poverty_rate_pct": 26.06,
+    "median_household_income": 59587,
+    "food_insecurity_est": 23311,
+    "race": {
+      "white_non_hispanic": 15422,
+      "black": 22022,
+      "hispanic": 15312,
+      "asian": 7263
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10029",
+    "total_population": 77447,
+    "poverty_rate_pct": 30.98,
+    "median_household_income": 38695,
+    "food_insecurity_est": 33593,
+    "race": {
+      "white_non_hispanic": 11297,
+      "black": 21115,
+      "hispanic": 32691,
+      "asian": 8865
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10030",
+    "total_population": 29297,
+    "poverty_rate_pct": 36.43,
+    "median_household_income": 39802,
+    "food_insecurity_est": 14943,
+    "race": {
+      "white_non_hispanic": 2764,
+      "black": 15067,
+      "hispanic": 8007,
+      "asian": 1355
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10031",
+    "total_population": 61058,
+    "poverty_rate_pct": 23.95,
+    "median_household_income": 65283,
+    "food_insecurity_est": 20471,
+    "race": {
+      "white_non_hispanic": 10659,
+      "black": 14393,
+      "hispanic": 30355,
+      "asian": 2727
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10032",
+    "total_population": 55610,
+    "poverty_rate_pct": 22.41,
+    "median_household_income": 56829,
+    "food_insecurity_est": 17449,
+    "race": {
+      "white_non_hispanic": 9176,
+      "black": 6767,
+      "hispanic": 33735,
+      "asian": 3451
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10033",
+    "total_population": 54838,
+    "poverty_rate_pct": 18.15,
+    "median_household_income": 75040,
+    "food_insecurity_est": 13932,
+    "race": {
+      "white_non_hispanic": 14483,
+      "black": 2069,
+      "hispanic": 35094,
+      "asian": 1835
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10034",
+    "total_population": 37758,
+    "poverty_rate_pct": 16.16,
+    "median_household_income": 67754,
+    "food_insecurity_est": 8542,
+    "race": {
+      "white_non_hispanic": 7252,
+      "black": 2346,
+      "hispanic": 25672,
+      "asian": 969
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10035",
+    "total_population": 38862,
+    "poverty_rate_pct": 34.21,
+    "median_household_income": 45121,
+    "food_insecurity_est": 18612,
+    "race": {
+      "white_non_hispanic": 5524,
+      "black": 12182,
+      "hispanic": 17079,
+      "asian": 2048
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10036",
+    "total_population": 31036,
+    "poverty_rate_pct": 13.96,
+    "median_household_income": 95638,
+    "food_insecurity_est": 6064,
+    "race": {
+      "white_non_hispanic": 15622,
+      "black": 2696,
+      "hispanic": 5323,
+      "asian": 4834
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10037",
+    "total_population": 19031,
+    "poverty_rate_pct": 29.03,
+    "median_household_income": 49153,
+    "food_insecurity_est": 7733,
+    "race": {
+      "white_non_hispanic": 2225,
+      "black": 11896,
+      "hispanic": 3613,
+      "asian": 449
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10038",
+    "total_population": 22235,
+    "poverty_rate_pct": 19.38,
+    "median_household_income": 105419,
+    "food_insecurity_est": 6031,
+    "race": {
+      "white_non_hispanic": 9802,
+      "black": 2188,
+      "hispanic": 2542,
+      "asian": 6415
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10039",
+    "total_population": 32492,
+    "poverty_rate_pct": 28.47,
+    "median_household_income": 45371,
+    "food_insecurity_est": 12951,
+    "race": {
+      "white_non_hispanic": 1860,
+      "black": 17041,
+      "hispanic": 11273,
+      "asian": 555
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10040",
+    "total_population": 40096,
+    "poverty_rate_pct": 17.33,
+    "median_household_income": 65516,
+    "food_insecurity_est": 9727,
+    "race": {
+      "white_non_hispanic": 9009,
+      "black": 1564,
+      "hispanic": 27364,
+      "asian": 656
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10044",
+    "total_population": 11520,
+    "poverty_rate_pct": 11.95,
+    "median_household_income": 103347,
+    "food_insecurity_est": 1928,
+    "race": {
+      "white_non_hispanic": 5003,
+      "black": 1394,
+      "hispanic": 1432,
+      "asian": 3045
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10065",
+    "total_population": 30808,
+    "poverty_rate_pct": 6.26,
+    "median_household_income": 155331,
+    "food_insecurity_est": 2700,
+    "race": {
+      "white_non_hispanic": 22424,
+      "black": 646,
+      "hispanic": 2811,
+      "asian": 3815
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10075",
+    "total_population": 21897,
+    "poverty_rate_pct": 14.71,
+    "median_household_income": 155902,
+    "food_insecurity_est": 4509,
+    "race": {
+      "white_non_hispanic": 17386,
+      "black": 542,
+      "hispanic": 1182,
+      "asian": 1883
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10119",
+    "total_population": 0,
+    "poverty_rate_pct": 0,
+    "median_household_income": -666666666,
+    "food_insecurity_est": 0,
+    "race": {
+      "white_non_hispanic": 0,
+      "black": 0,
+      "hispanic": 0,
+      "asian": 0
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10128",
+    "total_population": 57976,
+    "poverty_rate_pct": 8.92,
+    "median_household_income": 147772,
+    "food_insecurity_est": 7243,
+    "race": {
+      "white_non_hispanic": 38067,
+      "black": 3162,
+      "hispanic": 7526,
+      "asian": 5929
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10301",
+    "total_population": 41052,
+    "poverty_rate_pct": 18.72,
+    "median_household_income": 85609,
+    "food_insecurity_est": 10760,
+    "race": {
+      "white_non_hispanic": 14817,
+      "black": 8787,
+      "hispanic": 12250,
+      "asian": 3482
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10302",
+    "total_population": 19030,
+    "poverty_rate_pct": 17.08,
+    "median_household_income": 78263,
+    "food_insecurity_est": 4551,
+    "race": {
+      "white_non_hispanic": 4750,
+      "black": 3408,
+      "hispanic": 9018,
+      "asian": 1316
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10303",
+    "total_population": 26497,
+    "poverty_rate_pct": 17.86,
+    "median_household_income": 83947,
+    "food_insecurity_est": 6623,
+    "race": {
+      "white_non_hispanic": 4015,
+      "black": 8361,
+      "hispanic": 9971,
+      "asian": 2740
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10304",
+    "total_population": 45658,
+    "poverty_rate_pct": 18.34,
+    "median_household_income": 71561,
+    "food_insecurity_est": 11722,
+    "race": {
+      "white_non_hispanic": 15348,
+      "black": 11362,
+      "hispanic": 10616,
+      "asian": 6884
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10305",
+    "total_population": 41270,
+    "poverty_rate_pct": 11.11,
+    "median_household_income": 83413,
+    "food_insecurity_est": 6419,
+    "race": {
+      "white_non_hispanic": 22699,
+      "black": 1295,
+      "hispanic": 6094,
+      "asian": 9521
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10306",
+    "total_population": 57428,
+    "poverty_rate_pct": 9.4,
+    "median_household_income": 96866,
+    "food_insecurity_est": 7557,
+    "race": {
+      "white_non_hispanic": 35945,
+      "black": 1503,
+      "hispanic": 8860,
+      "asian": 9134
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10307",
+    "total_population": 15512,
+    "poverty_rate_pct": 6.01,
+    "median_household_income": 147184,
+    "food_insecurity_est": 1306,
+    "race": {
+      "white_non_hispanic": 12908,
+      "black": 5,
+      "hispanic": 1915,
+      "asian": 404
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10308",
+    "total_population": 30568,
+    "poverty_rate_pct": 6.1,
+    "median_household_income": 125850,
+    "food_insecurity_est": 2610,
+    "race": {
+      "white_non_hispanic": 22830,
+      "black": 190,
+      "hispanic": 4478,
+      "asian": 2417
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10309",
+    "total_population": 34885,
+    "poverty_rate_pct": 7.1,
+    "median_household_income": 116098,
+    "food_insecurity_est": 3467,
+    "race": {
+      "white_non_hispanic": 29297,
+      "black": 276,
+      "hispanic": 2704,
+      "asian": 1529
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10310",
+    "total_population": 25672,
+    "poverty_rate_pct": 13.42,
+    "median_household_income": 106250,
+    "food_insecurity_est": 4821,
+    "race": {
+      "white_non_hispanic": 9980,
+      "black": 4656,
+      "hispanic": 8738,
+      "asian": 1223
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10312",
+    "total_population": 63469,
+    "poverty_rate_pct": 6.14,
+    "median_household_income": 110719,
+    "food_insecurity_est": 5458,
+    "race": {
+      "white_non_hispanic": 45956,
+      "black": 507,
+      "hispanic": 8385,
+      "asian": 7221
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10314",
+    "total_population": 93915,
+    "poverty_rate_pct": 11.03,
+    "median_household_income": 104613,
+    "food_insecurity_est": 14495,
+    "race": {
+      "white_non_hispanic": 56400,
+      "black": 3284,
+      "hispanic": 13912,
+      "asian": 16909
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10451",
+    "total_population": 50942,
+    "poverty_rate_pct": 33.25,
+    "median_household_income": 38770,
+    "food_insecurity_est": 23713,
+    "race": {
+      "white_non_hispanic": 2817,
+      "black": 20898,
+      "hispanic": 25442,
+      "asian": 601
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10452",
+    "total_population": 75682,
+    "poverty_rate_pct": 34.63,
+    "median_household_income": 41288,
+    "food_insecurity_est": 36687,
+    "race": {
+      "white_non_hispanic": 2218,
+      "black": 21427,
+      "hispanic": 49519,
+      "asian": 450
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10453",
+    "total_population": 76282,
+    "poverty_rate_pct": 37.9,
+    "median_household_income": 33186,
+    "food_insecurity_est": 40472,
+    "race": {
+      "white_non_hispanic": 1459,
+      "black": 20683,
+      "hispanic": 51365,
+      "asian": 557
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10454",
+    "total_population": 39570,
+    "poverty_rate_pct": 45.2,
+    "median_household_income": 24086,
+    "food_insecurity_est": 25038,
+    "race": {
+      "white_non_hispanic": 913,
+      "black": 8518,
+      "hispanic": 28211,
+      "asian": 212
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10455",
+    "total_population": 44801,
+    "poverty_rate_pct": 36.73,
+    "median_household_income": 36115,
+    "food_insecurity_est": 23036,
+    "race": {
+      "white_non_hispanic": 544,
+      "black": 9119,
+      "hispanic": 33231,
+      "asian": 521
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10456",
+    "total_population": 87533,
+    "poverty_rate_pct": 38.61,
+    "median_household_income": 34954,
+    "food_insecurity_est": 47311,
+    "race": {
+      "white_non_hispanic": 1543,
+      "black": 33215,
+      "hispanic": 48584,
+      "asian": 889
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10457",
+    "total_population": 79543,
+    "poverty_rate_pct": 32.77,
+    "median_household_income": 42683,
+    "food_insecurity_est": 36490,
+    "race": {
+      "white_non_hispanic": 1131,
+      "black": 24551,
+      "hispanic": 51586,
+      "asian": 375
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10458",
+    "total_population": 74898,
+    "poverty_rate_pct": 31.33,
+    "median_household_income": 40800,
+    "food_insecurity_est": 32850,
+    "race": {
+      "white_non_hispanic": 7234,
+      "black": 12879,
+      "hispanic": 49911,
+      "asian": 2288
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10459",
+    "total_population": 48270,
+    "poverty_rate_pct": 33.72,
+    "median_household_income": 38006,
+    "food_insecurity_est": 22786,
+    "race": {
+      "white_non_hispanic": 662,
+      "black": 13955,
+      "hispanic": 32194,
+      "asian": 370
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10460",
+    "total_population": 59396,
+    "poverty_rate_pct": 34.21,
+    "median_household_income": 36309,
+    "food_insecurity_est": 28451,
+    "race": {
+      "white_non_hispanic": 1716,
+      "black": 17621,
+      "hispanic": 37625,
+      "asian": 775
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10461",
+    "total_population": 52012,
+    "poverty_rate_pct": 16.02,
+    "median_household_income": 67028,
+    "food_insecurity_est": 11667,
+    "race": {
+      "white_non_hispanic": 15294,
+      "black": 4266,
+      "hispanic": 24201,
+      "asian": 6903
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10462",
+    "total_population": 76320,
+    "poverty_rate_pct": 20.24,
+    "median_household_income": 60966,
+    "food_insecurity_est": 21628,
+    "race": {
+      "white_non_hispanic": 8232,
+      "black": 15638,
+      "hispanic": 34961,
+      "asian": 14284
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10463",
+    "total_population": 69470,
+    "poverty_rate_pct": 18.69,
+    "median_household_income": 74974,
+    "food_insecurity_est": 18178,
+    "race": {
+      "white_non_hispanic": 20138,
+      "black": 8319,
+      "hispanic": 35436,
+      "asian": 2827
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10464",
+    "total_population": 3828,
+    "poverty_rate_pct": 5.2,
+    "median_household_income": 103125,
+    "food_insecurity_est": 278,
+    "race": {
+      "white_non_hispanic": 2569,
+      "black": 34,
+      "hispanic": 891,
+      "asian": 90
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10466",
+    "total_population": 71116,
+    "poverty_rate_pct": 22.12,
+    "median_household_income": 65969,
+    "food_insecurity_est": 22022,
+    "race": {
+      "white_non_hispanic": 1356,
+      "black": 42495,
+      "hispanic": 20419,
+      "asian": 1784
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10467",
+    "total_population": 96421,
+    "poverty_rate_pct": 27.63,
+    "median_household_income": 49330,
+    "food_insecurity_est": 37301,
+    "race": {
+      "white_non_hispanic": 7826,
+      "black": 27316,
+      "hispanic": 52300,
+      "asian": 5730
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10468",
+    "total_population": 75557,
+    "poverty_rate_pct": 27.92,
+    "median_household_income": 46233,
+    "food_insecurity_est": 29538,
+    "race": {
+      "white_non_hispanic": 2737,
+      "black": 13248,
+      "hispanic": 57113,
+      "asian": 1676
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10469",
+    "total_population": 68521,
+    "poverty_rate_pct": 16.6,
+    "median_household_income": 76020,
+    "food_insecurity_est": 15926,
+    "race": {
+      "white_non_hispanic": 5867,
+      "black": 36865,
+      "hispanic": 18763,
+      "asian": 4285
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "10470",
+    "total_population": 16004,
+    "poverty_rate_pct": 11.01,
+    "median_household_income": 90046,
+    "food_insecurity_est": 2467,
+    "race": {
+      "white_non_hispanic": 5976,
+      "black": 3925,
+      "hispanic": 4507,
+      "asian": 533
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10471",
+    "total_population": 23798,
+    "poverty_rate_pct": 5.79,
+    "median_household_income": 103046,
+    "food_insecurity_est": 1929,
+    "race": {
+      "white_non_hispanic": 12378,
+      "black": 1936,
+      "hispanic": 7076,
+      "asian": 966
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "10472",
+    "total_population": 64011,
+    "poverty_rate_pct": 34.16,
+    "median_household_income": 41039,
+    "food_insecurity_est": 30615,
+    "race": {
+      "white_non_hispanic": 1563,
+      "black": 14089,
+      "hispanic": 39909,
+      "asian": 5028
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10473",
+    "total_population": 58855,
+    "poverty_rate_pct": 22.64,
+    "median_household_income": 52462,
+    "food_insecurity_est": 18654,
+    "race": {
+      "white_non_hispanic": 715,
+      "black": 18831,
+      "hispanic": 35492,
+      "asian": 1990
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10474",
+    "total_population": 11270,
+    "poverty_rate_pct": 29.33,
+    "median_household_income": 41586,
+    "food_insecurity_est": 4627,
+    "race": {
+      "white_non_hispanic": 150,
+      "black": 2530,
+      "hispanic": 8231,
+      "asian": 0
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "10475",
+    "total_population": 42578,
+    "poverty_rate_pct": 14.89,
+    "median_household_income": 62712,
+    "food_insecurity_est": 8873,
+    "race": {
+      "white_non_hispanic": 1858,
+      "black": 26633,
+      "hispanic": 12482,
+      "asian": 514
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11101",
+    "total_population": 42219,
+    "poverty_rate_pct": 15.2,
+    "median_household_income": 121062,
+    "food_insecurity_est": 8983,
+    "race": {
+      "white_non_hispanic": 13563,
+      "black": 3727,
+      "hispanic": 7743,
+      "asian": 14025
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11102",
+    "total_population": 28503,
+    "poverty_rate_pct": 12.59,
+    "median_household_income": 96617,
+    "food_insecurity_est": 5022,
+    "race": {
+      "white_non_hispanic": 13003,
+      "black": 2090,
+      "hispanic": 7581,
+      "asian": 4102
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11103",
+    "total_population": 35163,
+    "poverty_rate_pct": 10.55,
+    "median_household_income": 93324,
+    "food_insecurity_est": 5192,
+    "race": {
+      "white_non_hispanic": 17926,
+      "black": 987,
+      "hispanic": 9220,
+      "asian": 4916
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11104",
+    "total_population": 26132,
+    "poverty_rate_pct": 10.56,
+    "median_household_income": 80709,
+    "food_insecurity_est": 3862,
+    "race": {
+      "white_non_hispanic": 10399,
+      "black": 569,
+      "hispanic": 7493,
+      "asian": 6619
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11105",
+    "total_population": 37936,
+    "poverty_rate_pct": 9.21,
+    "median_household_income": 102012,
+    "food_insecurity_est": 4891,
+    "race": {
+      "white_non_hispanic": 23382,
+      "black": 939,
+      "hispanic": 8533,
+      "asian": 3391
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11106",
+    "total_population": 40930,
+    "poverty_rate_pct": 14.06,
+    "median_household_income": 84867,
+    "food_insecurity_est": 8059,
+    "race": {
+      "white_non_hispanic": 16554,
+      "black": 2778,
+      "hispanic": 11275,
+      "asian": 7443
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11201",
+    "total_population": 70674,
+    "poverty_rate_pct": 10.13,
+    "median_household_income": 173136,
+    "food_insecurity_est": 10023,
+    "race": {
+      "white_non_hispanic": 40486,
+      "black": 7121,
+      "hispanic": 8864,
+      "asian": 9585
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11203",
+    "total_population": 74817,
+    "poverty_rate_pct": 16.92,
+    "median_household_income": 67897,
+    "food_insecurity_est": 17724,
+    "race": {
+      "white_non_hispanic": 4389,
+      "black": 55925,
+      "hispanic": 5447,
+      "asian": 1640
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11204",
+    "total_population": 79800,
+    "poverty_rate_pct": 21.72,
+    "median_household_income": 69479,
+    "food_insecurity_est": 24263,
+    "race": {
+      "white_non_hispanic": 41780,
+      "black": 879,
+      "hispanic": 10389,
+      "asian": 23320
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11205",
+    "total_population": 51676,
+    "poverty_rate_pct": 25.05,
+    "median_household_income": 93887,
+    "food_insecurity_est": 18120,
+    "race": {
+      "white_non_hispanic": 27008,
+      "black": 10592,
+      "hispanic": 6944,
+      "asian": 3534
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11206",
+    "total_population": 93020,
+    "poverty_rate_pct": 34.41,
+    "median_household_income": 61430,
+    "food_insecurity_est": 44816,
+    "race": {
+      "white_non_hispanic": 36668,
+      "black": 15398,
+      "hispanic": 32025,
+      "asian": 5829
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11207",
+    "total_population": 93198,
+    "poverty_rate_pct": 24.92,
+    "median_household_income": 56523,
+    "food_insecurity_est": 32513,
+    "race": {
+      "white_non_hispanic": 5284,
+      "black": 49800,
+      "hispanic": 29720,
+      "asian": 1999
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11208",
+    "total_population": 105428,
+    "poverty_rate_pct": 18.68,
+    "median_household_income": 62077,
+    "food_insecurity_est": 27575,
+    "race": {
+      "white_non_hispanic": 2538,
+      "black": 40269,
+      "hispanic": 43708,
+      "asian": 11842
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11209",
+    "total_population": 71004,
+    "poverty_rate_pct": 12.27,
+    "median_household_income": 93854,
+    "food_insecurity_est": 12200,
+    "race": {
+      "white_non_hispanic": 42028,
+      "black": 2123,
+      "hispanic": 14752,
+      "asian": 8689
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11210",
+    "total_population": 57915,
+    "poverty_rate_pct": 11.01,
+    "median_household_income": 83692,
+    "food_insecurity_est": 8930,
+    "race": {
+      "white_non_hispanic": 16533,
+      "black": 28272,
+      "hispanic": 4580,
+      "asian": 3199
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11211",
+    "total_population": 65314,
+    "poverty_rate_pct": 20.33,
+    "median_household_income": 107506,
+    "food_insecurity_est": 18587,
+    "race": {
+      "white_non_hispanic": 38035,
+      "black": 2336,
+      "hispanic": 16575,
+      "asian": 5001
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11212",
+    "total_population": 89020,
+    "poverty_rate_pct": 33.56,
+    "median_household_income": 41355,
+    "food_insecurity_est": 41827,
+    "race": {
+      "white_non_hispanic": 3809,
+      "black": 59353,
+      "hispanic": 16536,
+      "asian": 1144
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11213",
+    "total_population": 68846,
+    "poverty_rate_pct": 22.58,
+    "median_household_income": 65127,
+    "food_insecurity_est": 21765,
+    "race": {
+      "white_non_hispanic": 15969,
+      "black": 37332,
+      "hispanic": 8487,
+      "asian": 1376
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11214",
+    "total_population": 89397,
+    "poverty_rate_pct": 19.17,
+    "median_household_income": 65895,
+    "food_insecurity_est": 23989,
+    "race": {
+      "white_non_hispanic": 34741,
+      "black": 1707,
+      "hispanic": 16130,
+      "asian": 33702
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11215",
+    "total_population": 70441,
+    "poverty_rate_pct": 5.56,
+    "median_household_income": 185865,
+    "food_insecurity_est": 5481,
+    "race": {
+      "white_non_hispanic": 47589,
+      "black": 2018,
+      "hispanic": 10167,
+      "asian": 6338
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11216",
+    "total_population": 60685,
+    "poverty_rate_pct": 16.01,
+    "median_household_income": 101277,
+    "food_insecurity_est": 13599,
+    "race": {
+      "white_non_hispanic": 17008,
+      "black": 27614,
+      "hispanic": 7770,
+      "asian": 2959
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11217",
+    "total_population": 43490,
+    "poverty_rate_pct": 9.6,
+    "median_household_income": 162863,
+    "food_insecurity_est": 5842,
+    "race": {
+      "white_non_hispanic": 21231,
+      "black": 7057,
+      "hispanic": 6970,
+      "asian": 4140
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11218",
+    "total_population": 72042,
+    "poverty_rate_pct": 14.06,
+    "median_household_income": 97366,
+    "food_insecurity_est": 14181,
+    "race": {
+      "white_non_hispanic": 33598,
+      "black": 5988,
+      "hispanic": 12764,
+      "asian": 14975
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11219",
+    "total_population": 94196,
+    "poverty_rate_pct": 33.0,
+    "median_household_income": 58347,
+    "food_insecurity_est": 43519,
+    "race": {
+      "white_non_hispanic": 56949,
+      "black": 1238,
+      "hispanic": 12431,
+      "asian": 19544
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11220",
+    "total_population": 90652,
+    "poverty_rate_pct": 22.9,
+    "median_household_income": 69883,
+    "food_insecurity_est": 29063,
+    "race": {
+      "white_non_hispanic": 14961,
+      "black": 1729,
+      "hispanic": 37431,
+      "asian": 34568
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11221",
+    "total_population": 91588,
+    "poverty_rate_pct": 23.02,
+    "median_household_income": 85736,
+    "food_insecurity_est": 29511,
+    "race": {
+      "white_non_hispanic": 20406,
+      "black": 32197,
+      "hispanic": 28181,
+      "asian": 4844
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11222",
+    "total_population": 42853,
+    "poverty_rate_pct": 9.51,
+    "median_household_income": 125734,
+    "food_insecurity_est": 5707,
+    "race": {
+      "white_non_hispanic": 29008,
+      "black": 2123,
+      "hispanic": 5897,
+      "asian": 2445
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11223",
+    "total_population": 78093,
+    "poverty_rate_pct": 21.3,
+    "median_household_income": 63368,
+    "food_insecurity_est": 23285,
+    "race": {
+      "white_non_hispanic": 38423,
+      "black": 4145,
+      "hispanic": 11038,
+      "asian": 21018
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11224",
+    "total_population": 50822,
+    "poverty_rate_pct": 25.48,
+    "median_household_income": 43648,
+    "food_insecurity_est": 18126,
+    "race": {
+      "white_non_hispanic": 23272,
+      "black": 11229,
+      "hispanic": 10415,
+      "asian": 3868
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11225",
+    "total_population": 58158,
+    "poverty_rate_pct": 15.78,
+    "median_household_income": 88568,
+    "food_insecurity_est": 12849,
+    "race": {
+      "white_non_hispanic": 16788,
+      "black": 30178,
+      "hispanic": 4990,
+      "asian": 2255
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11226",
+    "total_population": 95144,
+    "poverty_rate_pct": 15.9,
+    "median_household_income": 81014,
+    "food_insecurity_est": 21180,
+    "race": {
+      "white_non_hispanic": 14671,
+      "black": 54412,
+      "hispanic": 14521,
+      "asian": 4501
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11229",
+    "total_population": 78377,
+    "poverty_rate_pct": 16.9,
+    "median_household_income": 70603,
+    "food_insecurity_est": 18546,
+    "race": {
+      "white_non_hispanic": 44747,
+      "black": 5273,
+      "hispanic": 7087,
+      "asian": 17501
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11230",
+    "total_population": 86978,
+    "poverty_rate_pct": 20.19,
+    "median_household_income": 70027,
+    "food_insecurity_est": 24584,
+    "race": {
+      "white_non_hispanic": 47515,
+      "black": 7512,
+      "hispanic": 10625,
+      "asian": 15025
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11231",
+    "total_population": 38276,
+    "poverty_rate_pct": 13.1,
+    "median_household_income": 139930,
+    "food_insecurity_est": 7020,
+    "race": {
+      "white_non_hispanic": 22838,
+      "black": 3734,
+      "hispanic": 6470,
+      "asian": 1933
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11232",
+    "total_population": 27816,
+    "poverty_rate_pct": 19.18,
+    "median_household_income": 90891,
+    "food_insecurity_est": 7468,
+    "race": {
+      "white_non_hispanic": 6665,
+      "black": 1708,
+      "hispanic": 14747,
+      "asian": 3816
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11233",
+    "total_population": 81822,
+    "poverty_rate_pct": 23.62,
+    "median_household_income": 62411,
+    "food_insecurity_est": 27055,
+    "race": {
+      "white_non_hispanic": 8827,
+      "black": 52585,
+      "hispanic": 13816,
+      "asian": 1758
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11234",
+    "total_population": 83187,
+    "poverty_rate_pct": 9.54,
+    "median_household_income": 97479,
+    "food_insecurity_est": 11111,
+    "race": {
+      "white_non_hispanic": 28023,
+      "black": 34666,
+      "hispanic": 8089,
+      "asian": 7306
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11235",
+    "total_population": 78558,
+    "poverty_rate_pct": 18.06,
+    "median_household_income": 59661,
+    "food_insecurity_est": 19857,
+    "race": {
+      "white_non_hispanic": 52605,
+      "black": 2280,
+      "hispanic": 7361,
+      "asian": 11274
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11236",
+    "total_population": 88051,
+    "poverty_rate_pct": 13.23,
+    "median_household_income": 81464,
+    "food_insecurity_est": 16308,
+    "race": {
+      "white_non_hispanic": 3061,
+      "black": 68509,
+      "hispanic": 6895,
+      "asian": 1797
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11237",
+    "total_population": 45334,
+    "poverty_rate_pct": 20.0,
+    "median_household_income": 85196,
+    "food_insecurity_est": 12692,
+    "race": {
+      "white_non_hispanic": 12696,
+      "black": 4752,
+      "hispanic": 22047,
+      "asian": 3248
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11238",
+    "total_population": 58345,
+    "poverty_rate_pct": 12.15,
+    "median_household_income": 134523,
+    "food_insecurity_est": 9928,
+    "race": {
+      "white_non_hispanic": 26686,
+      "black": 13787,
+      "hispanic": 8205,
+      "asian": 4094
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11239",
+    "total_population": 16410,
+    "poverty_rate_pct": 25.24,
+    "median_household_income": 38015,
+    "food_insecurity_est": 5799,
+    "race": {
+      "white_non_hispanic": 2439,
+      "black": 9384,
+      "hispanic": 3276,
+      "asian": 364
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11249",
+    "total_population": 47728,
+    "poverty_rate_pct": 17.26,
+    "median_household_income": 123047,
+    "food_insecurity_est": 11531,
+    "race": {
+      "white_non_hispanic": 29672,
+      "black": 5175,
+      "hispanic": 7356,
+      "asian": 2578
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11354",
+    "total_population": 53028,
+    "poverty_rate_pct": 20.26,
+    "median_household_income": 66010,
+    "food_insecurity_est": 15038,
+    "race": {
+      "white_non_hispanic": 7464,
+      "black": 1741,
+      "hispanic": 8973,
+      "asian": 33447
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11355",
+    "total_population": 80801,
+    "poverty_rate_pct": 21.88,
+    "median_household_income": 55326,
+    "food_insecurity_est": 24745,
+    "race": {
+      "white_non_hispanic": 5382,
+      "black": 1677,
+      "hispanic": 12066,
+      "asian": 59847
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11356",
+    "total_population": 25824,
+    "poverty_rate_pct": 11.15,
+    "median_household_income": 86730,
+    "food_insecurity_est": 4030,
+    "race": {
+      "white_non_hispanic": 4903,
+      "black": 287,
+      "hispanic": 10227,
+      "asian": 10106
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11357",
+    "total_population": 43346,
+    "poverty_rate_pct": 7.96,
+    "median_household_income": 96988,
+    "food_insecurity_est": 4829,
+    "race": {
+      "white_non_hispanic": 22547,
+      "black": 131,
+      "hispanic": 6782,
+      "asian": 11353
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11358",
+    "total_population": 37665,
+    "poverty_rate_pct": 11.98,
+    "median_household_income": 88165,
+    "food_insecurity_est": 6314,
+    "race": {
+      "white_non_hispanic": 10068,
+      "black": 226,
+      "hispanic": 7215,
+      "asian": 18349
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11361",
+    "total_population": 30127,
+    "poverty_rate_pct": 12.32,
+    "median_household_income": 105932,
+    "food_insecurity_est": 5196,
+    "race": {
+      "white_non_hispanic": 10349,
+      "black": 928,
+      "hispanic": 5339,
+      "asian": 12455
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11362",
+    "total_population": 18492,
+    "poverty_rate_pct": 5.16,
+    "median_household_income": 122090,
+    "food_insecurity_est": 1334,
+    "race": {
+      "white_non_hispanic": 6826,
+      "black": 769,
+      "hispanic": 1849,
+      "asian": 8518
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11363",
+    "total_population": 7223,
+    "poverty_rate_pct": 8.03,
+    "median_household_income": 125015,
+    "food_insecurity_est": 812,
+    "race": {
+      "white_non_hispanic": 3793,
+      "black": 46,
+      "hispanic": 831,
+      "asian": 2227
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11365",
+    "total_population": 42322,
+    "poverty_rate_pct": 10.37,
+    "median_household_income": 81258,
+    "food_insecurity_est": 6146,
+    "race": {
+      "white_non_hispanic": 10145,
+      "black": 3853,
+      "hispanic": 8185,
+      "asian": 19068
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11366",
+    "total_population": 13463,
+    "poverty_rate_pct": 7.95,
+    "median_household_income": 135373,
+    "food_insecurity_est": 1498,
+    "race": {
+      "white_non_hispanic": 4062,
+      "black": 499,
+      "hispanic": 2436,
+      "asian": 5685
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11367",
+    "total_population": 40923,
+    "poverty_rate_pct": 13.36,
+    "median_household_income": 75061,
+    "food_insecurity_est": 7656,
+    "race": {
+      "white_non_hispanic": 18253,
+      "black": 2318,
+      "hispanic": 8008,
+      "asian": 9770
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11368",
+    "total_population": 105716,
+    "poverty_rate_pct": 19.35,
+    "median_household_income": 72270,
+    "food_insecurity_est": 28631,
+    "race": {
+      "white_non_hispanic": 4551,
+      "black": 10389,
+      "hispanic": 77145,
+      "asian": 12301
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11369",
+    "total_population": 35133,
+    "poverty_rate_pct": 15.62,
+    "median_household_income": 80297,
+    "food_insecurity_est": 7681,
+    "race": {
+      "white_non_hispanic": 2250,
+      "black": 6370,
+      "hispanic": 21004,
+      "asian": 4433
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11370",
+    "total_population": 30267,
+    "poverty_rate_pct": 10.73,
+    "median_household_income": 76009,
+    "food_insecurity_est": 4546,
+    "race": {
+      "white_non_hispanic": 8072,
+      "black": 1885,
+      "hispanic": 11440,
+      "asian": 7939
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11372",
+    "total_population": 64756,
+    "poverty_rate_pct": 14.56,
+    "median_household_income": 78606,
+    "food_insecurity_est": 13200,
+    "race": {
+      "white_non_hispanic": 11877,
+      "black": 893,
+      "hispanic": 35510,
+      "asian": 13127
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11373",
+    "total_population": 98403,
+    "poverty_rate_pct": 14.8,
+    "median_household_income": 71480,
+    "food_insecurity_est": 20386,
+    "race": {
+      "white_non_hispanic": 4489,
+      "black": 1512,
+      "hispanic": 42669,
+      "asian": 47307
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11374",
+    "total_population": 46989,
+    "poverty_rate_pct": 12.99,
+    "median_household_income": 90631,
+    "food_insecurity_est": 8547,
+    "race": {
+      "white_non_hispanic": 16630,
+      "black": 2072,
+      "hispanic": 10783,
+      "asian": 13773
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11375",
+    "total_population": 76839,
+    "poverty_rate_pct": 8.7,
+    "median_household_income": 105904,
+    "food_insecurity_est": 9361,
+    "race": {
+      "white_non_hispanic": 34253,
+      "black": 2535,
+      "hispanic": 13397,
+      "asian": 21807
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11377",
+    "total_population": 81690,
+    "poverty_rate_pct": 11.1,
+    "median_household_income": 73073,
+    "food_insecurity_est": 12699,
+    "race": {
+      "white_non_hispanic": 15922,
+      "black": 1854,
+      "hispanic": 31701,
+      "asian": 30132
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11378",
+    "total_population": 36392,
+    "poverty_rate_pct": 12.68,
+    "median_household_income": 85830,
+    "food_insecurity_est": 6462,
+    "race": {
+      "white_non_hispanic": 17482,
+      "black": 292,
+      "hispanic": 11653,
+      "asian": 5949
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11379",
+    "total_population": 36773,
+    "poverty_rate_pct": 8.06,
+    "median_household_income": 93558,
+    "food_insecurity_est": 4150,
+    "race": {
+      "white_non_hispanic": 21925,
+      "black": 419,
+      "hispanic": 8690,
+      "asian": 4322
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11385",
+    "total_population": 101704,
+    "poverty_rate_pct": 11.98,
+    "median_household_income": 88838,
+    "food_insecurity_est": 17064,
+    "race": {
+      "white_non_hispanic": 42121,
+      "black": 2775,
+      "hispanic": 46439,
+      "asian": 7060
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11411",
+    "total_population": 20540,
+    "poverty_rate_pct": 7.34,
+    "median_household_income": 116458,
+    "food_insecurity_est": 2111,
+    "race": {
+      "white_non_hispanic": 343,
+      "black": 16759,
+      "hispanic": 1829,
+      "asian": 588
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11412",
+    "total_population": 39828,
+    "poverty_rate_pct": 10.41,
+    "median_household_income": 97979,
+    "food_insecurity_est": 5805,
+    "race": {
+      "white_non_hispanic": 424,
+      "black": 30733,
+      "hispanic": 3449,
+      "asian": 1782
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11413",
+    "total_population": 45965,
+    "poverty_rate_pct": 6.08,
+    "median_household_income": 118440,
+    "food_insecurity_est": 3911,
+    "race": {
+      "white_non_hispanic": 576,
+      "black": 38105,
+      "hispanic": 4215,
+      "asian": 597
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11414",
+    "total_population": 31308,
+    "poverty_rate_pct": 6.92,
+    "median_household_income": 95051,
+    "food_insecurity_est": 3031,
+    "race": {
+      "white_non_hispanic": 18943,
+      "black": 1477,
+      "hispanic": 7948,
+      "asian": 1408
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11416",
+    "total_population": 25919,
+    "poverty_rate_pct": 18.21,
+    "median_household_income": 81188,
+    "food_insecurity_est": 6607,
+    "race": {
+      "white_non_hispanic": 2935,
+      "black": 1067,
+      "hispanic": 11517,
+      "asian": 8486
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11417",
+    "total_population": 30578,
+    "poverty_rate_pct": 12.28,
+    "median_household_income": 87006,
+    "food_insecurity_est": 5256,
+    "race": {
+      "white_non_hispanic": 4774,
+      "black": 2090,
+      "hispanic": 11725,
+      "asian": 8342
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11418",
+    "total_population": 35481,
+    "poverty_rate_pct": 9.98,
+    "median_household_income": 90156,
+    "food_insecurity_est": 4959,
+    "race": {
+      "white_non_hispanic": 6312,
+      "black": 2497,
+      "hispanic": 14483,
+      "asian": 8566
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11419",
+    "total_population": 47441,
+    "poverty_rate_pct": 11.63,
+    "median_household_income": 93399,
+    "food_insecurity_est": 7725,
+    "race": {
+      "white_non_hispanic": 1620,
+      "black": 5188,
+      "hispanic": 11361,
+      "asian": 15096
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11420",
+    "total_population": 49415,
+    "poverty_rate_pct": 11.13,
+    "median_household_income": 100006,
+    "food_insecurity_est": 7699,
+    "race": {
+      "white_non_hispanic": 2554,
+      "black": 9812,
+      "hispanic": 10016,
+      "asian": 15458
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11421",
+    "total_population": 40612,
+    "poverty_rate_pct": 10.48,
+    "median_household_income": 90685,
+    "food_insecurity_est": 5958,
+    "race": {
+      "white_non_hispanic": 5345,
+      "black": 1781,
+      "hispanic": 22894,
+      "asian": 8233
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11422",
+    "total_population": 33757,
+    "poverty_rate_pct": 9.52,
+    "median_household_income": 114697,
+    "food_insecurity_est": 4500,
+    "race": {
+      "white_non_hispanic": 2073,
+      "black": 26296,
+      "hispanic": 3052,
+      "asian": 483
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11423",
+    "total_population": 28534,
+    "poverty_rate_pct": 11.95,
+    "median_household_income": 80054,
+    "food_insecurity_est": 4775,
+    "race": {
+      "white_non_hispanic": 2668,
+      "black": 8788,
+      "hispanic": 5061,
+      "asian": 8923
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11424",
+    "total_population": 0,
+    "poverty_rate_pct": 0,
+    "median_household_income": -666666666,
+    "food_insecurity_est": 0,
+    "race": {
+      "white_non_hispanic": 0,
+      "black": 0,
+      "hispanic": 0,
+      "asian": 0
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11426",
+    "total_population": 19411,
+    "poverty_rate_pct": 7.51,
+    "median_household_income": 103533,
+    "food_insecurity_est": 2041,
+    "race": {
+      "white_non_hispanic": 4078,
+      "black": 1064,
+      "hispanic": 3659,
+      "asian": 9621
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11427",
+    "total_population": 24607,
+    "poverty_rate_pct": 10.84,
+    "median_household_income": 88980,
+    "food_insecurity_est": 3733,
+    "race": {
+      "white_non_hispanic": 3385,
+      "black": 5455,
+      "hispanic": 4170,
+      "asian": 8936
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11428",
+    "total_population": 19028,
+    "poverty_rate_pct": 9.64,
+    "median_household_income": 91296,
+    "food_insecurity_est": 2569,
+    "race": {
+      "white_non_hispanic": 1466,
+      "black": 3434,
+      "hispanic": 4894,
+      "asian": 6270
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11429",
+    "total_population": 26832,
+    "poverty_rate_pct": 9.41,
+    "median_household_income": 102880,
+    "food_insecurity_est": 3533,
+    "race": {
+      "white_non_hispanic": 901,
+      "black": 16789,
+      "hispanic": 3997,
+      "asian": 2198
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11432",
+    "total_population": 62892,
+    "poverty_rate_pct": 15.33,
+    "median_household_income": 74096,
+    "food_insecurity_est": 13499,
+    "race": {
+      "white_non_hispanic": 7571,
+      "black": 10689,
+      "hispanic": 13760,
+      "asian": 25533
+    },
+    "race_majority": "Asian"
+  },
+  {
+    "zip": "11433",
+    "total_population": 37884,
+    "poverty_rate_pct": 12.86,
+    "median_household_income": 77519,
+    "food_insecurity_est": 6821,
+    "race": {
+      "white_non_hispanic": 450,
+      "black": 19039,
+      "hispanic": 5880,
+      "asian": 7904
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11434",
+    "total_population": 68263,
+    "poverty_rate_pct": 13.62,
+    "median_household_income": 77598,
+    "food_insecurity_est": 13016,
+    "race": {
+      "white_non_hispanic": 1201,
+      "black": 51964,
+      "hispanic": 7843,
+      "asian": 2593
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11435",
+    "total_population": 56826,
+    "poverty_rate_pct": 15.7,
+    "median_household_income": 79710,
+    "food_insecurity_est": 12493,
+    "race": {
+      "white_non_hispanic": 6297,
+      "black": 13138,
+      "hispanic": 17127,
+      "asian": 13513
+    },
+    "race_majority": "Hispanic"
+  },
+  {
+    "zip": "11436",
+    "total_population": 22527,
+    "poverty_rate_pct": 12.48,
+    "median_household_income": 88047,
+    "food_insecurity_est": 3937,
+    "race": {
+      "white_non_hispanic": 202,
+      "black": 12467,
+      "hispanic": 3215,
+      "asian": 1736
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11580",
+    "total_population": 43092,
+    "poverty_rate_pct": 4.14,
+    "median_household_income": 137402,
+    "food_insecurity_est": 2495,
+    "race": {
+      "white_non_hispanic": 7662,
+      "black": 11750,
+      "hispanic": 11226,
+      "asian": 8635
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11691",
+    "total_population": 69359,
+    "poverty_rate_pct": 21.9,
+    "median_household_income": 56135,
+    "food_insecurity_est": 21267,
+    "race": {
+      "white_non_hispanic": 16861,
+      "black": 26460,
+      "hispanic": 18666,
+      "asian": 2707
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11692",
+    "total_population": 22734,
+    "poverty_rate_pct": 28.25,
+    "median_household_income": 49720,
+    "food_insecurity_est": 8992,
+    "race": {
+      "white_non_hispanic": 2265,
+      "black": 12690,
+      "hispanic": 5272,
+      "asian": 1497
+    },
+    "race_majority": "Black"
+  },
+  {
+    "zip": "11693",
+    "total_population": 13244,
+    "poverty_rate_pct": 17.99,
+    "median_household_income": 68449,
+    "food_insecurity_est": 3335,
+    "race": {
+      "white_non_hispanic": 6143,
+      "black": 3228,
+      "hispanic": 2658,
+      "asian": 438
+    },
+    "race_majority": "White (non-Hispanic)"
+  },
+  {
+    "zip": "11694",
+    "total_population": 21489,
+    "poverty_rate_pct": 10.92,
+    "median_household_income": 111011,
+    "food_insecurity_est": 3284,
+    "race": {
+      "white_non_hispanic": 15820,
+      "black": 1300,
+      "hispanic": 3624,
+      "asian": 382
+    },
+    "race_majority": "White (non-Hispanic)"
+  }
+]
