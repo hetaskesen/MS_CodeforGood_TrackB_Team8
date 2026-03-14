@@ -5,7 +5,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   ResponsiveContainer, Tooltip,
 } from "recharts";
-import { demoPantries, manhattanBenchmarks, nearbyPantries } from "@/lib/data";
+import { demoPantries, manhattanBenchmarks, nearbyPantries } from "@/lib/mockData";
 import Footer from "./Footer";
 
 const MiniMap = dynamic(() => import("./MiniMap"), { ssr: false });
@@ -413,7 +413,7 @@ export default function OperatorPanel() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/operator/pantries")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/operator/pantries`)
       .then((r) => r.json())
       .then(({ pantries: live, source }) => {
         if (Array.isArray(live) && live.length > 0) {

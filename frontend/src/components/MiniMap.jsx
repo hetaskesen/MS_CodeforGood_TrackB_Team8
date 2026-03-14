@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { ratingColor } from "@/lib/data";
+import { ratingColor } from "@/lib/helpers";
 
 export default function MiniMap({ lat, lng, name, rating, address }) {
   const containerRef = useRef(null);

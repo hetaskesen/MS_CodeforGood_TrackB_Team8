@@ -1,4 +1,4 @@
-import { CENSUS_LAYERS } from "@/lib/data";
+import { CENSUS_LAYERS } from "@/lib/constants";
 
 const ICONS = {
   poverty: "◈",

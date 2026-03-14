@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { demandEstimates, censusTracts } from "@/lib/data";
+import { demandEstimates, censusTracts } from "@/lib/mockData";
 import Footer from "./Footer";
 
 // Simulated 6-months-ago gap zone count for trend indicator

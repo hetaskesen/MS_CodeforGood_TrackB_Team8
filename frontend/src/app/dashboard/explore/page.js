@@ -820,9 +820,10 @@ function ExploreContent() {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     Promise.all([
-      fetch("/api/resources"),
-      fetch("/api/resources/meta"),
+      fetch(`${apiUrl}/api/resources`),
+      fetch(`${apiUrl}/api/resources/meta`),
     ])
       .then(([resRes, metaRes]) => {
         if (cancelled) return;

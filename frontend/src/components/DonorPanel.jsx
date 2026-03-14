@@ -10,7 +10,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { resources, donorPortfolio, ratingColor } from "@/lib/data";
+import { resources, donorPortfolio } from "@/lib/mockData";
+import { ratingColor } from "@/lib/helpers";
 
 export default function DonorPanel() {
   const dp = donorPortfolio;

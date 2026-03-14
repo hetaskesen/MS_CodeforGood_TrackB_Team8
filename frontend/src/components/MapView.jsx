@@ -3,14 +3,9 @@
 import { useEffect, useRef, useCallback } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {
-  resources,
-  censusTracts,
-  donorPortfolio,
-  ratingColor,
-  povertyOpacity,
-  CENSUS_LAYERS,
-} from "@/lib/data";
+import { resources, censusTracts, donorPortfolio } from "@/lib/mockData";
+import { ratingColor, povertyOpacity } from "@/lib/helpers";
+import { CENSUS_LAYERS } from "@/lib/constants";
 
 const viewConfigs = {
   operator: { center: [40.708, -74.005], zoom: 16, resource: "res_002" },

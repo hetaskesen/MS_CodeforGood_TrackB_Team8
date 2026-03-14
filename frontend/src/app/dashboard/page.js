@@ -7,7 +7,8 @@ import Navbar from "@/components/Navbar";
 import OperatorPanel from "@/components/OperatorPanel";
 import DonorPanel from "@/components/DonorPanel";
 import GovernmentPanel from "@/components/GovernmentPanel";
-import { resources, donorPortfolio, ratingColor } from "@/lib/data";
+import { resources, donorPortfolio } from "@/lib/mockData";
+import { ratingColor } from "@/lib/helpers";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
