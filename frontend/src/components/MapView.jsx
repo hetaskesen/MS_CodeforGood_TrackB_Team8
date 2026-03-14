@@ -52,10 +52,12 @@ export default function MapView({ mode, onResourceSelect, onInvalidateRef }) {
     mapRef.current = map;
 
     if (onInvalidateRef) {
-      onInvalidateRef(() => {
-        map.invalidateSize({ animate: true });
-      });
+  onInvalidateRef(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize({ animate: true });
     }
+  });
+}
 
     return () => {
       map.remove();
