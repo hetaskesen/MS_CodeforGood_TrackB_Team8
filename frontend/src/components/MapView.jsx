@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { resources, censusTracts, donorPortfolio } from "@/lib/mockData";
+import { resources, censusTracts, donorPortfolio, govData } from "@/lib/mockData";
 import { ratingColor, povertyOpacity } from "@/lib/helpers";
 import { CENSUS_LAYERS } from "@/lib/constants";
 
@@ -39,6 +39,12 @@ export default function MapView({
   const markersRef = useRef([]);
   const overlaysRef = useRef([]);
   const censusOverlaysRef = useRef([]);
+
+  // Active government tab — tracked via custom events from GovernmentPanel
+  const [activeGovTab, setActiveGovTab] = useState("overview");
+  const govTabRef = useRef("overview");
+  // Stable ref to the latest render function (avoids stale-closure issues)
+  const renderGovRef = useRef(null);
 
   const clear = useCallback(() => {
     markersRef.current.forEach((m) => m.remove());
@@ -104,7 +110,10 @@ export default function MapView({
       } else if (mode === "donor") {
         renderDonor(map);
       } else {
-        renderGovernment(map);
+        // Reset to overview tab when switching to government mode
+        govTabRef.current = "overview";
+        setActiveGovTab("overview");
+        renderGovRef.current?.(map, "overview");
       }
     }, 600);
 
@@ -202,75 +211,127 @@ export default function MapView({
     });
   }
 
-  function renderGovernment(map) {
-    // 1) Base choropleth layer for poverty.
-    censusTracts.forEach((tract) => {
-      const color = povertyColor(tract.povertyRate);
-      const opacity = povertyOpacity(tract.povertyRate);
+  // Keep renderGovRef pointing to the latest version of this function
+  // so event listeners can call it without stale-closure issues.
+  function renderGovernmentForTab(map, tab) {
+    const dimMarkers = tab === "underserved" || tab === "gaps";
 
-      const rect = L.rectangle(tract.bounds, {
-        color,
-        weight: 0,
-        fillColor: color,
-        fillOpacity: Math.max(0.2, opacity * 0.65),
-        opacity: 0,
+    // ── 1) Underserved ZIP polygons ──
+    govData.underservedZips.forEach((z) => {
+      const fillColor = z.needScore >= 70 ? "#EF4444" : "#F59E0B";
+      // Dim polygons when barriers tab is active (markers take focus there)
+      const fillOpacity = tab === "barriers"
+        ? 0.10
+        : z.needScore >= 70 ? 0.28 : 0.22;
+      const strokeOpacity = tab === "barriers" ? 0.25 : 0.6;
+
+      const rect = L.rectangle(z.bounds, {
+        color: fillColor,
+        weight: 1.5,
+        fillColor,
+        fillOpacity,
+        opacity: strokeOpacity,
       }).addTo(map);
 
       rect.bindPopup(
         `<div style="font-family:DM Sans,sans-serif;font-size:12px;line-height:1.7">
-          <strong style="font-size:13px;">${tract.name}</strong><br/>
-          <span style="color:${color};font-weight:600;">Poverty: ${Math.round(tract.povertyRate * 100)}%</span><br/>
-          Population: ${tract.population.toLocaleString()}<br/>
-          Median income: $${tract.medianIncome.toLocaleString()}
-          ${tract.isGapZone ? '<br/><span style="color:#E24B4A;font-weight:700;">Gap zone - no resources nearby</span>' : ""}
+          <strong style="font-size:13px;">${z.neighborhood}</strong><br/>
+          <span style="color:#DC2626;font-weight:600;">ZIP ${z.zip} · Underserved</span><br/>
+          Poverty: <strong>${z.poverty.toFixed(1)}%</strong><br/>
+          Food insecure: <strong>~${z.foodInsecurity.toLocaleString()}</strong><br/>
+          Pantries: <strong>${z.pantryCount}</strong><br/>
+          SNAP / pantry: <strong>${z.snapPerPantry.toLocaleString()}</strong><br/>
+          Need score: <strong style="color:#DC2626">${z.needScore}</strong>
         </div>`,
         { closeButton: false },
       );
       overlaysRef.current.push(rect);
+
+      // ZIP label in polygon center
+      const center = [
+        (z.bounds[0][0] + z.bounds[1][0]) / 2,
+        (z.bounds[0][1] + z.bounds[1][1]) / 2,
+      ];
+      const labelIcon = L.divIcon({
+        className: "",
+        html: `<div style="
+          padding:2px 7px;
+          background:rgba(239,68,68,0.15);
+          border:1.5px solid ${fillColor};
+          border-radius:5px;
+          font-size:10px;
+          color:${fillColor};
+          font-weight:700;
+          font-family:DM Sans,sans-serif;
+          white-space:nowrap;
+          backdrop-filter:blur(2px);
+        ">${z.zip}</div>`,
+        iconSize: [48, 20],
+        iconAnchor: [24, 10],
+      });
+      overlaysRef.current.push(L.marker(center, { icon: labelIcon }).addTo(map));
     });
 
-    // 2) Purple dashed overlays to highlight gap zones.
-    censusTracts
-      .filter((t) => t.isGapZone)
-      .forEach((t) => {
-        const gapRect = L.rectangle(t.bounds, {
-          color: "#7C3AED",
+    // ── 2) Zero-pantry ZIP outlines (shown on overview, underserved, gaps) ──
+    if (tab !== "barriers") {
+      govData.zeroPantryZips.forEach((z) => {
+        const rect = L.rectangle(z.bounds, {
+          color: "#DC2626",
           weight: 2,
-          dashArray: "6, 4",
-          fillColor: "#7C3AED",
-          fillOpacity: 0.05,
-          opacity: 0.7,
+          dashArray: "7, 5",
+          fillOpacity: 0,
+          opacity: 0.8,
         }).addTo(map);
-        overlaysRef.current.push(gapRect);
+
+        rect.bindPopup(
+          `<div style="font-family:DM Sans,sans-serif;font-size:12px;line-height:1.7">
+            <strong style="font-size:13px;">${z.neighborhood}</strong><br/>
+            <span style="color:#DC2626;font-weight:700;">No pantries — ZIP ${z.zip}</span><br/>
+            Population: <strong>${z.population.toLocaleString()}</strong><br/>
+            Food insecure: <strong>~${z.foodInsecurity.toLocaleString()}</strong><br/>
+            Poverty: <strong>${z.poverty.toFixed(1)}%</strong>
+          </div>`,
+          { closeButton: false },
+        );
+        overlaysRef.current.push(rect);
 
         const center = [
-          (t.bounds[0][0] + t.bounds[1][0]) / 2,
-          (t.bounds[0][1] + t.bounds[1][1]) / 2,
+          (z.bounds[0][0] + z.bounds[1][0]) / 2,
+          (z.bounds[0][1] + z.bounds[1][1]) / 2,
         ];
         const labelIcon = L.divIcon({
           className: "",
           html: `<div style="
-            padding:3px 10px;
-            background:rgba(124,58,237,0.12);
-            border:1.5px dashed #7C3AED;
-            border-radius:6px;
+            padding:2px 7px;
+            background:rgba(255,255,255,0.9);
+            border:1.5px dashed #DC2626;
+            border-radius:5px;
             font-size:10px;
-            color:#7C3AED;
+            color:#DC2626;
             font-weight:700;
             font-family:DM Sans,sans-serif;
             white-space:nowrap;
-            backdrop-filter:blur(2px);
-          ">Gap zone</div>`,
-          iconSize: [80, 24],
-          iconAnchor: [40, 12],
+          ">No pantries · ${z.zip}</div>`,
+          iconSize: [104, 20],
+          iconAnchor: [52, 10],
         });
-        const labelMarker = L.marker(center, { icon: labelIcon }).addTo(map);
-        overlaysRef.current.push(labelMarker);
+        overlaysRef.current.push(L.marker(center, { icon: labelIcon }).addTo(map));
       });
+    }
 
-    // 3) Government resource pins.
+    // ── 3) Resource pins — color/opacity varies by tab ──
     resources.forEach((r) => {
-      const color = ratingColorGov(r.rating);
+      let color;
+      if (tab === "barriers") {
+        // Color by access barrier type
+        const tags = (r.tags ?? []).map((t) => t.toLowerCase());
+        if (tags.some((t) => t.includes("id required")))       color = "#EF4444";
+        else if (tags.some((t) => t.includes("registration"))) color = "#F59E0B";
+        else                                                     color = "#1D9E75";
+      } else {
+        color = ratingColorGov(r.rating);
+      }
+
       const isSoup = r.type === "SOUP_KITCHEN";
       const size = 15;
 
@@ -288,11 +349,13 @@ export default function MapView({
       });
 
       const marker = L.marker([r.lat, r.lng], { icon }).addTo(map);
+      // Dim markers when underserved/gaps tab is active
+      if (dimMarkers) marker.setOpacity(0.25);
+
       marker.bindPopup(
         `<div style="font-family:DM Sans,sans-serif;font-size:12px;line-height:1.6">
           <strong style="font-size:13px;">${r.name}</strong><br/>
           ${r.rating ? `<span style="color:${color};font-weight:600;">★ ${r.rating}</span> &middot; ` : ""}
-          ${r.waitTime ? `${r.waitTime} min wait &middot; ` : ""}
           ${r.reviews ? `${r.reviews} reviews` : "No reviews yet"}
           <br/><span style="color:#9c9588;font-size:11px;">${isSoup ? "Soup kitchen" : "Food pantry"}</span>
         </div>`,
@@ -301,6 +364,37 @@ export default function MapView({
       markersRef.current.push(marker);
     });
   }
+
+  // Keep renderGovRef current so the event listener always calls the latest version
+  renderGovRef.current = renderGovernmentForTab;
+
+  // ── Event listeners: gov:tabchange and gov:flyto ──
+  useEffect(() => {
+    const handleTabChange = (e) => {
+      if (mode !== "government") return;
+      const tab = e.detail?.tab ?? "overview";
+      govTabRef.current = tab;
+      setActiveGovTab(tab);
+      const map = mapRef.current;
+      if (!map) return;
+      clear();
+      renderGovRef.current(map, tab);
+    };
+
+    const handleFlyTo = (e) => {
+      const { lat, lng, zoom } = e.detail ?? {};
+      if (mapRef.current && lat != null && lng != null) {
+        mapRef.current.flyTo([lat, lng], zoom ?? 14, { duration: 0.8, easeLinearity: 0.3 });
+      }
+    };
+
+    window.addEventListener("gov:tabchange", handleTabChange);
+    window.addEventListener("gov:flyto", handleFlyTo);
+    return () => {
+      window.removeEventListener("gov:tabchange", handleTabChange);
+      window.removeEventListener("gov:flyto", handleFlyTo);
+    };
+  }, [mode, clear]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -342,8 +436,8 @@ export default function MapView({
       : null;
 
   const governmentResourceLegend = [
-    { label: "Good  >=2.5", color: "#1D9E75", round: true },
-    { label: "Low  2.0-2.5", color: "#EF9F27", round: true },
+    { label: "Good  ≥2.5", color: "#1D9E75", round: true },
+    { label: "Low  2.0–2.5", color: "#EF9F27", round: true },
     { label: "Critical  <2.0", color: "#E24B4A", round: true },
     { label: "Soup kitchen", color: "#1D9E75", round: false },
   ];
@@ -362,32 +456,64 @@ export default function MapView({
           className="absolute bottom-5 left-4 z-[800] bg-white rounded-xl p-3.5 border border-sand-200"
           style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.1)" }}
         >
-          <div className="text-[9px] font-semibold text-sand-400 uppercase tracking-widest mb-2">
-            Resources
-          </div>
-          <div className="space-y-1.5">
-            {governmentResourceLegend.map(({ label, color, round }) => (
-              <div key={label} className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 shrink-0 border-2 border-white"
-                  style={{
-                    backgroundColor: color,
-                    borderRadius: round ? "50%" : "3px",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                  }}
-                />
-                <span className="text-[10px] text-sand-600">{label}</span>
+          {activeGovTab === "barriers" ? (
+            /* ── Barrier tab legend ── */
+            <>
+              <div className="text-[9px] font-semibold text-sand-400 uppercase tracking-widest mb-2">
+                Colored by access barrier
               </div>
-            ))}
-          </div>
+              <div className="space-y-1.5">
+                {[
+                  { label: "ID required",        color: "#EF4444", round: true },
+                  { label: "Registration req.",  color: "#F59E0B", round: true },
+                  { label: "No major barrier",   color: "#1D9E75", round: true },
+                ].map(({ label, color, round }) => (
+                  <div key={label} className="flex items-center gap-2">
+                    <div className="w-4 h-4 shrink-0 border-2 border-white"
+                      style={{ backgroundColor: color, borderRadius: round ? "50%" : "3px", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
+                    <span className="text-[10px] text-sand-600">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            /* ── Default / other tabs legend ── */
+            <>
+              <div className="text-[9px] font-semibold text-sand-400 uppercase tracking-widest mb-2">
+                Resources
+              </div>
+              <div className="space-y-1.5">
+                {governmentResourceLegend.map(({ label, color, round }) => (
+                  <div key={label} className="flex items-center gap-2">
+                    <div
+                      className="w-4 h-4 shrink-0 border-2 border-white"
+                      style={{
+                        backgroundColor: color,
+                        borderRadius: round ? "50%" : "3px",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                      }}
+                    />
+                    <span className="text-[10px] text-sand-600">{label}</span>
+                  </div>
+                ))}
+              </div>
 
-          <div className="flex items-center gap-2 pt-2 mt-2 border-t border-sand-100">
-            <div
-              className="w-5 h-3 rounded-sm shrink-0 border-2 border-dashed"
-              style={{ borderColor: "#7C3AED" }}
-            />
-            <span className="text-[10px] text-sand-600">Gap zone</span>
-          </div>
+              <div className="pt-2 mt-2 border-t border-sand-100 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-3 rounded-sm shrink-0" style={{ background: "#EF4444", opacity: 0.4 }} />
+                  <span className="text-[10px] text-sand-600">Underserved ZIP (need ≥70)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-3 rounded-sm shrink-0" style={{ background: "#F59E0B", opacity: 0.35 }} />
+                  <span className="text-[10px] text-sand-600">Underserved ZIP (need 50–69)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-3 rounded-sm shrink-0 border-2 border-dashed" style={{ borderColor: "#DC2626" }} />
+                  <span className="text-[10px] text-sand-600">Zero-pantry zone</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -431,12 +557,19 @@ export default function MapView({
             ))}
           </div>
 
-          <div className="flex items-center gap-2 pt-2 mt-2 border-t border-sand-100">
-            <div
-              className="w-5 h-3 rounded-sm shrink-0 border-2 border-dashed"
-              style={{ borderColor: "#7C3AED" }}
-            />
-            <span className="text-[10px] text-sand-600">Gap zone</span>
+          <div className="pt-2 mt-2 border-t border-sand-100 space-y-1.5">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-3 rounded-sm shrink-0" style={{ background: "#EF4444", opacity: 0.4 }} />
+              <span className="text-[10px] text-sand-600">Underserved ZIP (need ≥70)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-3 rounded-sm shrink-0" style={{ background: "#F59E0B", opacity: 0.35 }} />
+              <span className="text-[10px] text-sand-600">Underserved ZIP (need 50–69)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-3 rounded-sm shrink-0 border-2 border-dashed" style={{ borderColor: "#DC2626" }} />
+              <span className="text-[10px] text-sand-600">Zero-pantry zone</span>
+            </div>
           </div>
         </div>
       )}

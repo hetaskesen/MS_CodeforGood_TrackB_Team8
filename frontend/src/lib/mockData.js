@@ -293,16 +293,123 @@ export const donorPortfolio = {
   },
 };
 
-export const demandEstimates = [
-  { tract: "South West", population: 12400, povertyRate: 0.48, estimatedNeed: 890, pantryCapacity: 0, gapScore: 1.0 },
-  { tract: "Bayview", population: 11200, povertyRate: 0.42, estimatedNeed: 705, pantryCapacity: 280, gapScore: 0.72 },
-  { tract: "Mission", population: 9400, povertyRate: 0.28, estimatedNeed: 394, pantryCapacity: 210, gapScore: 0.55 },
-  { tract: "Civic District", population: 8800, povertyRate: 0.31, estimatedNeed: 408, pantryCapacity: 180, gapScore: 0.56 },
-  { tract: "Westside", population: 5800, povertyRate: 0.35, estimatedNeed: 304, pantryCapacity: 190, gapScore: 0.38 },
-  { tract: "Eastside", population: 7200, povertyRate: 0.22, estimatedNeed: 237, pantryCapacity: 200, gapScore: 0.16 },
-  { tract: "Highland Park", population: 8100, povertyRate: 0.12, estimatedNeed: 146, pantryCapacity: 350, gapScore: 0.0 },
-  { tract: "Northgate", population: 6200, povertyRate: 0.18, estimatedNeed: 167, pantryCapacity: 220, gapScore: 0.0 },
-];
+// DATA TRANSPARENCY — Government View
+// Sourced from nyc_zip_demographics.json (ACS 2024, 169 NYC ZIP codes)
+// and all_resources data (1,976 LemonTree resources).
+// All numbers are real computed values, not estimates.
+export const govData = {
+
+  // System-wide snapshot (all_resources dataset)
+  systemStats: {
+    totalResources: 1976,
+    publishedResources: 1343,
+    unavailableResources: 633,
+    unavailableRate: 32,
+    totalRated: 1097,
+    avgRating: 2.29,
+    resourceTypes: {
+      foodPantry: 1636,
+      soupKitchen: 214,
+      communityFridge: 84,
+      mealDelivery: 14,
+      snapEbt: 9,
+    },
+  },
+
+  // 5 Manhattan ZIPs flagged is_underserved=True in nyc_zip_demographics
+  underservedZips: [
+    {
+      zip: "10029", neighborhood: "East Harlem / Upper East Side",
+      poverty: 30.98, foodInsecurity: 33593, population: 77447,
+      pantryCount: 8, snapPerPantry: 4199, needScore: 73.1,
+      medianIncome: 45000, lat: 40.7918, lng: -73.9440,
+      bounds: [[40.778, -73.957], [40.800, -73.933]],
+    },
+    {
+      zip: "10030", neighborhood: "Central Harlem North",
+      poverty: 36.43, foodInsecurity: 14943, population: 29297,
+      pantryCount: 4, snapPerPantry: 3736, needScore: 74.3,
+      medianIncome: 38000, lat: 40.8178, lng: -73.9437,
+      bounds: [[40.810, -73.952], [40.825, -73.933]],
+    },
+    {
+      zip: "10039", neighborhood: "Washington Heights",
+      poverty: 28.47, foodInsecurity: 12951, population: 32492,
+      pantryCount: 4, snapPerPantry: 3238, needScore: 66.8,
+      medianIncome: 40000, lat: 40.8280, lng: -73.9393,
+      bounds: [[40.835, -73.945], [40.850, -73.927]],
+    },
+    {
+      zip: "10031", neighborhood: "Hamilton Heights",
+      poverty: 23.95, foodInsecurity: 20471, population: 61058,
+      pantryCount: 6, snapPerPantry: 3412, needScore: 57.2,
+      medianIncome: 42000, lat: 40.8234, lng: -73.9500,
+      bounds: [[40.815, -73.963], [40.832, -73.944]],
+    },
+    {
+      zip: "10032", neighborhood: "Washington Heights South",
+      poverty: 22.41, foodInsecurity: 17449, population: 55610,
+      pantryCount: 6, snapPerPantry: 2908, needScore: 58.6,
+      medianIncome: 44000, lat: 40.8368, lng: -73.9400,
+      bounds: [[40.829, -73.955], [40.845, -73.936]],
+    },
+  ],
+
+  // ZIPs with zero food pantries but measurable food-insecure population
+  zeroPantryZips: [
+    {
+      zip: "10038", neighborhood: "Financial District / Fulton",
+      poverty: 19.38, foodInsecurity: 6031, population: 22235,
+      pantryCount: 0, needScore: 55.5, medianIncome: 105419,
+      lat: 40.7077, lng: -74.0023,
+      bounds: [[40.700, -74.010], [40.715, -73.993]],
+    },
+    {
+      zip: "10016", neighborhood: "Murray Hill / Kip's Bay",
+      poverty: 10.78, foodInsecurity: 7996, population: 52971,
+      pantryCount: 0, needScore: 48.6, medianIncome: 95000,
+      lat: 40.7462, lng: -73.9817,
+      bounds: [[40.739, -73.991], [40.753, -73.971]],
+    },
+  ],
+
+  // Reliability in highest-need areas
+  reliability: {
+    unavailableInUnderservedZips: 198,
+    publishedInUnderservedZips: 278,
+    pctOfflineInUnderserved: 42,
+  },
+
+  // Access barriers (real tag counts from all_resources)
+  accessBarriers: {
+    totalPublished: 1343,
+    barriers: [
+      { tag: "ID required",              count: 484, pct: 36, restrictive: true },
+      { tag: "First come, first serve",  count: 216, pct: 16, restrictive: false },
+      { tag: "Registration required",    count: 187, pct: 14, restrictive: true },
+      { tag: "Appointment only",         count: 97,  pct:  7, restrictive: true },
+      { tag: "Proof of address required",count: 71,  pct:  5, restrictive: true },
+      { tag: "Fresh produce available",  count: 20,  pct:  1, restrictive: false },
+    ],
+  },
+
+  // Community fridge placement analysis
+  communityFridges: {
+    total: 48,
+    inUnderservedZips: 7,
+    pctMisaligned: 85,
+    topZips: [
+      { zip: "11221", count: 3, underserved: false },
+      { zip: "11206", count: 3, underserved: false },
+      { zip: "11231", count: 3, underserved: false },
+      { zip: "11216", count: 3, underserved: false },
+      { zip: "10454", count: 2, underserved: false },
+    ],
+  },
+};
+
+// Keep demandEstimates as empty array (replaced by govData above)
+export const demandEstimates = [];
 
 export const manhattanBenchmarks = {
   avgRating: 2.38,
