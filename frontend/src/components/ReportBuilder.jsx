@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import html2canvas from "html2canvas";
 import VisualizationBuilder from "./VisualizationBuilder";
 import FundingSimulator from "./FundingSimulator";
 
@@ -32,6 +33,30 @@ const STUB_BTN_STYLE = {
 
 export default function ReportBuilder() {
   const [activeTab, setActiveTab] = useState("viz");
+  const [copyFeedback, setCopyFeedback] = useState(false);
+  const contentRef = useRef(null);
+
+  const handleCopyLink = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopyFeedback(true);
+      setTimeout(() => setCopyFeedback(false), 2000);
+    });
+  }, []);
+
+  const handleExportPNG = useCallback(() => {
+    if (!contentRef.current) return;
+    html2canvas(contentRef.current, { useCORS: true, scale: 2 }).then((canvas) => {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lemontree-report.png";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    });
+  }, []);
 
   return (
     <div
@@ -87,8 +112,10 @@ export default function ReportBuilder() {
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0, marginTop: 2 }}>
-          <button style={STUB_BTN_STYLE}>📋 Copy shareable link</button>
-          <button style={STUB_BTN_STYLE}>⬇ Export as PNG</button>
+          <button style={STUB_BTN_STYLE} onClick={handleCopyLink}>
+            {copyFeedback ? "✓ Copied!" : "📋 Copy shareable link"}
+          </button>
+          <button style={STUB_BTN_STYLE} onClick={handleExportPNG}>⬇ Export as PNG</button>
         </div>
       </div>
 
@@ -121,7 +148,7 @@ export default function ReportBuilder() {
       </div>
 
       {/* Tab content */}
-      <div style={{ padding: "20px 28px 48px" }}>
+      <div ref={contentRef} style={{ padding: "20px 28px 48px" }}>
         {activeTab === "viz" && <VisualizationBuilder />}
         {activeTab === "sim" && <FundingSimulator />}
       </div>

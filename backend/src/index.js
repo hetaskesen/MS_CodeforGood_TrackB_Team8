@@ -7,6 +7,7 @@ const { getResourcesMeta } = require("./routes/resourcesMeta");
 const { getOperatorPantries, getOperatorNeighborhood } = require("./routes/operatorPantries");
 const { createReview, getReviews, getReviewsSummary } = require("./routes/reviews");
 const { getNearbyResources } = require("./routes/nearbyResources");
+const { getGovData } = require("./routes/govData");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -19,6 +20,7 @@ app.get("/api/resources/meta", getResourcesMeta);
 app.get("/api/operator/pantries", getOperatorPantries);
 app.get("/api/operator/neighborhood", getOperatorNeighborhood);
 app.get("/api/resources/nearby", getNearbyResources);
+app.get("/api/gov/data", getGovData);
 
 app.post("/api/reviews", createReview);
 app.get("/api/reviews/summary", getReviewsSummary);

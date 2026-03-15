@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import CensusLayerControls from "@/components/CensusLayerControls.jsx";
 import PersonaDropdown from "@/components/PersonaDropdown";
@@ -67,6 +68,7 @@ function getDefaultTabs(persona) {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [activePersona, setActivePersona] = useState("pantry-operator");
   const [tabs, setTabs] = useState(() => getDefaultTabs("pantry-operator"));
   const [activeTabId, setActiveTabId] = useState("dashboard-pantry");
@@ -410,6 +412,7 @@ export default function DashboardPage() {
             {initials}
           </div>
           <button
+            onClick={() => router.push("/")}
             style={{
               fontSize: 12,
               fontWeight: 600,
