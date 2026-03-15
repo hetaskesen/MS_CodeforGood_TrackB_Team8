@@ -291,7 +291,7 @@ export default function MapView({
           Poverty: <strong>${z.poverty.toFixed(1)}%</strong><br/>
           Food insecure: <strong>~${z.foodInsecurity.toLocaleString()}</strong><br/>
           Pantries: <strong>${z.pantryCount}</strong><br/>
-          SNAP / pantry: <strong>${z.snapPerPantry.toLocaleString()}</strong><br/>
+          SNAP / pantry: <strong>${(z.snapPerPantry ?? 0).toLocaleString()}</strong><br/>
           Need score: <strong style="color:#DC2626">${z.needScore}</strong>
         </div>`,
         { closeButton: false },
@@ -492,7 +492,7 @@ export default function MapView({
           Poverty: <strong>${z.poverty.toFixed(1)}%</strong><br/>
           Food insecure: <strong>~${z.foodInsecurity.toLocaleString()}</strong><br/>
           Pantries: <strong>${z.pantryCount}</strong><br/>
-          SNAP / pantry: <strong>${z.snapPerPantry.toLocaleString()}</strong><br/>
+          SNAP / pantry: <strong>${(z.snapPerPantry ?? 0).toLocaleString()}</strong><br/>
           Need score: <strong style="color:#DC2626">${z.needScore}</strong>
         </div>`,
         { closeButton: false },
