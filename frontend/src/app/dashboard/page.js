@@ -8,7 +8,9 @@ import PersonaDropdown from "@/components/PersonaDropdown";
 import WorkspaceTabBar from "@/components/WorkspaceTabBar";
 import TabPicker from "@/components/TabPicker";
 import { resources, donorPortfolio, govData as mockGovData } from "@/lib/mockData";
+import { useAppData } from "@/lib/dataCache";
 import { ratingColor } from "@/lib/helpers";
+import ExplorePage from "@/app/dashboard/explore/page";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -43,7 +45,6 @@ const AdminPanel = dynamic(() => import("@/components/AdminPanel"), {
 });
 
 const DEFAULT_RESOURCE = resources.find((r) => r.id === "res_002");
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 const NAV_HEIGHT = 62;
 const TAB_BAR_HEIGHT = 44;
 
@@ -79,8 +80,8 @@ export default function DashboardPage() {
   const [selectedResource, setSelectedResource] = useState(DEFAULT_RESOURCE);
   const [panelKey, setPanelKey] = useState(0);
   const mapInvalidateRef = useRef(null);
-  const [govData, setGovData] = useState(null);
-  const [govResources, setGovResources] = useState(null);
+
+  const { govData, resources: govResources, govLoading } = useAppData();
 
   const activeTabRef = useRef(null);
   const addButtonRef = useRef(null);
@@ -92,24 +93,6 @@ export default function DashboardPage() {
       : activeTab?.type === "dashboard-donor"
         ? "donor"
         : "operator";
-
-  useEffect(() => {
-    if ((contentMode !== "government" && contentMode !== "donor") || !apiUrl) return;
-    let cancelled = false;
-    Promise.all([
-      fetch(`${apiUrl}/api/gov/data`).then((r) => (r.ok ? r.json() : null)),
-      fetch(`${apiUrl}/api/resources`).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([data, resourcesList]) => {
-        if (cancelled) return;
-        setGovData(data && data.underservedZips ? data : null);
-        setGovResources(Array.isArray(resourcesList) ? resourcesList : null);
-      })
-      .catch(() => {
-        if (!cancelled) setGovData(null), setGovResources(null);
-      });
-    return () => { cancelled = true; };
-  }, [contentMode]);
 
   const handlePersonaChange = useCallback((persona) => {
     setActivePersona(persona);
@@ -321,11 +304,7 @@ export default function DashboardPage() {
       case "explore":
         return (
           <div className="h-full w-full overflow-hidden flex flex-col">
-            <iframe
-              src="/dashboard/explore?embedded=1"
-              title="Explore Resources"
-              className="w-full flex-1 border-0 min-h-0"
-            />
+            <ExplorePage embedded={true} />
           </div>
         );
       case "report-builder":

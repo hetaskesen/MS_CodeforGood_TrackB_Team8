@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getBorough } from "@/lib/zipToBorough";
+import { useAppData } from "@/lib/dataCache";
 import Footer from "@/components/Footer";
 import {
   Search, MapPin, Calendar, Users, DoorOpen, ArrowLeft, X,
@@ -778,10 +779,7 @@ function ExploreContent({ embedded = false }) {
   const router       = useRouter();
   const searchParams = useSearchParams();
 
-  const [resources,        setResources]        = useState([]);
-  const [meta,             setMeta]             = useState(null);
-  const [loading,          setLoading]          = useState(true);
-  const [error,            setError]            = useState(null);
+  const { resources, resourcesMeta: meta, resourcesLoading: loading } = useAppData();
   const [filters,          setFilters]          = useState(() => getInitialFilters(searchParams));
   const [page,             setPage]             = useState(Number(searchParams.get("page")) || 1);
   const [selectedResource, setSelectedResource] = useState(null);
@@ -814,40 +812,6 @@ function ExploreContent({ embedded = false }) {
   const setFiltersAndReset = useCallback((updater) => {
     setFilters(updater);
     setPage(1);
-  }, []);
-
-  // Fetch resources + meta once on mount
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    Promise.all([
-      fetch(`${apiUrl}/api/resources`),
-      fetch(`${apiUrl}/api/resources/meta`),
-    ])
-      .then(([resRes, metaRes]) => {
-        if (cancelled) return;
-        if (!resRes.ok)
-          throw new Error(resRes.statusText || "Failed to load resources");
-        if (!metaRes.ok)
-          throw new Error(metaRes.statusText || "Failed to load meta");
-        return Promise.all([resRes.json(), metaRes.json()]);
-      })
-      .then(([resData, metaData]) => {
-        if (cancelled) return;
-        setResources(Array.isArray(resData) ? resData : []);
-        setMeta(metaData);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err.message || "Could not load resources.");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   // All filtering + sorting in one memoized pass — no extra API calls
@@ -911,30 +875,6 @@ function ExploreContent({ embedded = false }) {
     filters.minRating, filters.maxWait,
     filters.tags?.length > 0,
   ].filter(Boolean).length;
-
-  // ── Error state ────────────────────────────────────────────────────────
-  if (error) {
-    return (
-      <div className="flex flex-col min-h-screen bg-[#f5f3ef]">
-        <TopNav />
-        <div className="flex flex-1 items-center justify-center p-8">
-          <div className="text-center">
-            <p className="text-sand-700 mb-2 font-medium">
-              Could not load resources.
-            </p>
-            <p className="text-sand-400 text-sm mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-[#FDE97A] rounded-lg font-medium text-[#3D2200] hover:bg-[#f5dc6a] transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   // ── Loading state ──────────────────────────────────────────────────────
   if (loading) {
@@ -1037,7 +977,7 @@ function ExploreWithParams() {
 
 /* ── Page export (Suspense boundary required for useSearchParams) ─────── */
 
-export default function ExplorePage() {
+export default function ExplorePage({ embedded: embeddedProp }) {
   return (
     <Suspense
       fallback={
@@ -1048,7 +988,11 @@ export default function ExplorePage() {
         </div>
       }
     >
-      <ExploreWithParams />
+      {embeddedProp !== undefined ? (
+        <ExploreContent embedded={embeddedProp} />
+      ) : (
+        <ExploreWithParams />
+      )}
     </Suspense>
   );
 }

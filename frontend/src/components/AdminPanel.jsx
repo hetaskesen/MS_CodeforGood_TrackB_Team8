@@ -670,6 +670,9 @@ const TABS = [
   { id: "incentive", label: "Incentive / Raffle", emoji: "🎟" },
 ];
 
+// Module-level guard — survives AdminPanel remounts (e.g. tab switch, Strict Mode)
+let adminFetchStarted = false;
+
 /* ── Main component ──────────────────────────────────────────────────────── */
 export default function AdminPanel() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
@@ -685,6 +688,8 @@ export default function AdminPanel() {
       setLoading(false);
       return;
     }
+    if (adminFetchStarted) return;
+    adminFetchStarted = true;
     setLoading(true);
     setError(null);
     Promise.all([

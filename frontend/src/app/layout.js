@@ -1,4 +1,5 @@
 import "./globals.css";
+import Providers from "@/components/Providers";
 
 export const metadata = {
   title: "Lemontree Insights",
@@ -9,6 +10,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
   return (
     <html lang="en">
       <head>
@@ -17,7 +19,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <Providers apiUrl={apiUrl}>{children}</Providers>
+      </body>
     </html>
   );
 }

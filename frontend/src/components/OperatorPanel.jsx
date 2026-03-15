@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
@@ -10,6 +10,9 @@ import Footer from "./Footer";
 const MiniMap = dynamic(() => import("./MiniMap"), { ssr: false });
 
 const API = process.env.NEXT_PUBLIC_API_URL;
+
+// Module-level guard — survives OperatorPanel remounts (e.g. tab switch, Strict Mode)
+let pantryFetchStarted = false;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -434,8 +437,11 @@ export default function OperatorPanel() {
   const [loading, setLoading] = useState(true);
   const [loadingNeighbors, setLoadingNeighbors] = useState(false);
   const [error, setError] = useState(null);
+  const neighborhoodFetchedZipRef = useRef(null);
 
   useEffect(() => {
+    if (pantryFetchStarted) return;
+    pantryFetchStarted = true;
     fetch(`${API}/api/operator/pantries`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -471,7 +477,10 @@ export default function OperatorPanel() {
   const resource = resources[selectedIdx];
 
   useEffect(() => {
-    if (resource) fetchNeighborhood(resource);
+    if (!resource?.zipCode) return;
+    if (neighborhoodFetchedZipRef.current === resource.zipCode) return;
+    neighborhoodFetchedZipRef.current = resource.zipCode;
+    fetchNeighborhood(resource);
   }, [resource, fetchNeighborhood]);
 
   if (loading) {
