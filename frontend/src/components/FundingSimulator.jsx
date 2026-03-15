@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { donorData as defaultDonorData } from "@/lib/mockData";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -59,8 +58,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
 
   const totalFunding = customAmt ? parseFloat(customAmt) || 0 : preset;
 
-  const donorData = donorDataProp ?? defaultDonorData;
-  const { topImpactResources } = donorData;
+  const topImpactResources = donorDataProp?.topImpactResources ?? [];
 
   // ── Simulation logic ────────────────────────────────────────────────────────
 

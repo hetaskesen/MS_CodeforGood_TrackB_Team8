@@ -19,7 +19,7 @@ import {
   Line,
   ReferenceLine,
 } from "recharts";
-import { govData as defaultGovData, donorData as defaultDonorData } from "@/lib/mockData";
+import { govData as defaultGovData } from "@/lib/mockData";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -713,7 +713,7 @@ function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyD
 
 export default function VisualizationBuilder({ govData: govDataProp, donorData: donorDataProp }) {
   const govData = govDataProp ?? defaultGovData;
-  const donorData = donorDataProp ?? defaultDonorData;
+  const donorData = donorDataProp ?? { boroughImpact: [], topImpactResources: [], backgroundResources: [] };
   const [charts, setCharts] = useState([]);
   const [chartType, setChartType] = useState("bar");
   const [dimension, setDimension] = useState("boroughs");

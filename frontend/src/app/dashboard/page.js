@@ -319,7 +319,7 @@ export default function DashboardPage() {
       case "funding-simulator":
         return (
           <div className="h-full overflow-auto bg-[#FAFAF8]">
-            <FundingSimulator />
+            <FundingSimulator donorData={derivedDonorData} />
           </div>
         );
       case "reviews-intelligence":
