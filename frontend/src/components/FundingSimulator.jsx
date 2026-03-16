@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const MONO = { fontFamily: "'Courier New', monospace" };
+
+const DONUT_COLORS = ["#2D6A4F", "#52B788", "#95D5B2", "#D8F3DC", "#1B4332"];
 
 const CARD = {
   background: "#fff",
@@ -14,7 +17,7 @@ const CARD = {
   boxShadow: "0 2px 10px rgba(0,0,0,0.07)",
 };
 
-const PRESETS = [5000, 10000, 25000, 50000, 100000];
+const PRESETS = [500, 1000, 2000, 3500, 5000];
 
 const PRIORITIES = [
   {
@@ -47,7 +50,7 @@ function fmtDollar(n) {
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export default function FundingSimulator({ donorData: donorDataProp }) {
-  const [preset, setPreset]         = useState(25000);
+  const [preset, setPreset]         = useState(2000);
   const [customAmt, setCustomAmt]   = useState("");
   const [focus, setFocus]           = useState("all");
   const [focusBorough, setFocusBorough] = useState("Bronx");
@@ -134,9 +137,17 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+    <div className="funding-simulator-root" style={{ display: "flex", gap: 16, alignItems: "flex-start", padding: 24 }}>
+      <style>{`
+        @media print {
+          .funding-simulator-root .funding-simulator-config { display: none !important; }
+          .funding-simulator-root .funding-simulator-results { flex: none !important; width: 100% !important; max-width: none !important; }
+          .funding-simulator-root .funding-simulator-results-inner { box-shadow: none !important; }
+        }
+      `}</style>
       {/* ── Left panel: controls ── */}
       <div
+        className="funding-simulator-config"
         style={{
           ...CARD,
           width: 340,
@@ -153,7 +164,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
             Configure your simulation
           </div>
           <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.5 }}>
-            See where your funding has the greatest impact on food access
+            See where your contribution — money, food, or volunteer time — would have the greatest impact across NYC
           </div>
         </div>
 
@@ -220,7 +231,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
                 type="number"
                 value={customAmt}
                 onChange={(e) => setCustomAmt(e.target.value)}
-                placeholder="e.g. 75000"
+                placeholder="e.g. 3500"
                 style={{
                   flex: 1,
                   padding: "8px 12px",
@@ -411,36 +422,59 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
       </div>
 
       {/* ── Right panel: results ── */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="funding-simulator-results" style={{ flex: 1, minWidth: 0 }}>
+        <div
+          className="funding-simulator-results-inner"
+          style={{
+            ...CARD,
+            borderRadius: 14,
+            padding: 24,
+            minHeight: 400,
+          }}
+        >
         {!results && !running && (
           <div
             style={{
-              ...CARD,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 400,
-              border: "2px dashed #D1D5DB",
-              background: "#FAFAF8",
-              gap: 12,
+              minHeight: 352,
+              border: "1px dashed #E5E7EB",
+              borderRadius: 12,
+              background: "#FAFAF9",
+              gap: 16,
             }}
           >
-            <span style={{ fontSize: 40 }}>💡</span>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 12,
+                background: "#F3F4F6",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-hidden
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 3v18h18" />
+                <path d="M18 9l-5 5-4-4-3 3" />
+              </svg>
+            </div>
             <p
               style={{
-                fontSize: 13,
-                color: "#9CA3AF",
+                fontSize: 14,
+                color: "#6B7280",
                 textAlign: "center",
                 maxWidth: 320,
                 lineHeight: 1.6,
                 margin: 0,
-                ...MONO,
               }}
             >
-              Configure simulation parameters and click
-              <br />
-              &lsquo;Run simulation&rsquo; to see results
+              Set your amount, focus area, and priority, then click
+              <strong style={{ color: "#374151" }}> Run simulation</strong> to see recommended allocations and estimated reach.
             </p>
           </div>
         )}
@@ -448,12 +482,11 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
         {running && (
           <div
             style={{
-              ...CARD,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 400,
+              minHeight: 352,
               gap: 12,
             }}
           >
@@ -474,267 +507,325 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
           </div>
         )}
 
-        {results && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Results header */}
-            <div style={{ ...CARD }}>
-              <div
-                style={{ fontSize: 18, fontWeight: 800, color: "#111827", marginBottom: 4 }}
-              >
-                Simulation results
-              </div>
-              <div style={{ fontSize: 12, color: "#9CA3AF", ...MONO }}>
-                ${totalFunding.toLocaleString()} ·{" "}
-                {focus === "all"
-                  ? "All of NYC"
-                  : focus === "borough"
-                  ? focusBorough
-                  : `ZIP ${focusZip}`}{" "}
-                · {PRIORITIES.find((p) => p.id === priority)?.label}
-              </div>
-            </div>
+        {results && (() => {
+          const totalAmount = totalFunding;
+          const allocationData = results.allocated.map((r) => {
+            const value = r.dollars;
+            const pct = Math.round((value / totalAmount) * 1000) / 10;
+            const needLevel =
+              r.impactScore >= 0.7 ? "critical" : r.impactScore >= 0.6 ? "high" : "medium";
+            return {
+              name: r.name,
+              borough: r.borough,
+              zip: r.zip,
+              value,
+              pct,
+              subscribers: r.subscriptions ?? 0,
+              povertyRate: r.povertyRate ?? 0,
+              rating: r.rating ?? 0,
+              needLevel,
+            };
+          });
 
-            {/* Recommended allocation */}
-            <div style={{ ...CARD }}>
+          const renderCenterLabel = (props) => {
+            if (props?.index !== 0) return null;
+            const viewBox = props?.viewBox ?? props;
+            const cx = viewBox?.cx ?? props?.cx;
+            const cy = viewBox?.cy ?? props?.cy;
+            if (cx == null || cy == null) return null;
+            return (
+              <g>
+                <text
+                  x={cx}
+                  y={cy - 8}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: 600,
+                    fill: "var(--color-text-primary, #111827)",
+                  }}
+                >
+                  ${totalAmount.toLocaleString()}
+                </text>
+                <text
+                  x={cx}
+                  y={cy + 16}
+                  textAnchor="middle"
+                  style={{
+                    fontSize: "11px",
+                    fill: "var(--color-text-secondary, #6B7280)",
+                  }}
+                >
+                  total allocation
+                </text>
+              </g>
+            );
+          };
+
+          const CustomTooltip = ({ active, payload }) => {
+            if (active && payload?.length) {
+              const d = payload[0].payload;
+              return (
+                <div
+                  style={{
+                    background: "var(--color-background-primary, #fff)",
+                    border: "1px solid var(--color-border-secondary, #E5E7EB)",
+                    borderRadius: 8,
+                    padding: "8px 12px",
+                    fontSize: 12,
+                  }}
+                >
+                  <div style={{ fontWeight: 500 }}>{d.name}</div>
+                  <div style={{ color: "var(--color-text-secondary, #6B7280)" }}>
+                    ${d.value.toLocaleString()} · {d.pct}%
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          };
+
+          function NeighborhoodCard({ data, color }) {
+            const badgeStyle =
+              data.needLevel === "critical"
+                ? { background: "#FEF2F2", color: "#991B1B", border: "1px solid #FECACA" }
+                : data.needLevel === "high"
+                ? { background: "#FFFBEB", color: "#92400E", border: "1px solid #FDE68A" }
+                : { background: "#F3F4F6", color: "#374151", border: "1px solid #E5E7EB" };
+            const badgeLabel =
+              data.needLevel === "critical" ? "Critical need" : data.needLevel === "high" ? "High need" : "Elevated need";
+            return (
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#111827",
-                  marginBottom: 14,
+                  background: "var(--color-background-primary, #fff)",
+                  border: "1px solid var(--color-border-tertiary, #E5E7EB)",
+                  borderLeft: `4px solid ${color}`,
+                  borderRadius: "0 8px 8px 0",
+                  padding: "12px 14px",
                 }}
               >
-                Recommended portfolio
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {results.allocated.map((r, i) => (
-                  <div
-                    key={i}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: "var(--color-text-primary, #111827)" }}>
+                      {data.name}
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--color-text-secondary, #6B7280)", marginTop: 2 }}>
+                      {data.borough} · {data.zip}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: "#2D6A4F" }}>
+                      ${data.value.toLocaleString()}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--color-text-secondary, #6B7280)" }}>{data.pct}%</div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 12,
+                    color: "var(--color-text-secondary, #6B7280)",
+                  }}
+                >
+                  {data.subscribers.toLocaleString()} subscribers · Poverty {data.povertyRate}% · Rating{" "}
+                  {typeof data.rating === "number" ? data.rating.toFixed(2) : data.rating}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <span
                     style={{
-                      padding: "14px 16px",
-                      borderRadius: 10,
-                      border: "1px solid #E5E7EB",
-                      background: i === 0 ? "#F0FDF4" : "#FAFAFA",
+                      fontSize: 11,
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      ...badgeStyle,
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        gap: 12,
-                        marginBottom: 6,
-                      }}
-                    >
-                      <div>
-                        <div
+                    {badgeLabel}
+                  </span>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Results header */}
+              <div>
+                <h2 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: "0 0 4px" }}>
+                  Simulation results
+                </h2>
+                <p style={{ fontSize: 12, color: "#9CA3AF", margin: 0, ...MONO }}>
+                  ${totalFunding.toLocaleString()} ·{" "}
+                  {focus === "all"
+                    ? "All of NYC"
+                    : focus === "borough"
+                    ? focusBorough
+                    : `ZIP ${focusZip}`}{" "}
+                  · {PRIORITIES.find((p) => p.id === priority)?.label}
+                </p>
+                <p style={{
+                  fontSize: '12px',
+                  color: 'var(--color-text-secondary)',
+                  marginTop: '4px',
+                  fontStyle: 'italic'
+                }}>
+                  This is a planning tool. Allocations are illustrative — connect with pantries directly or donate through City Harvest to act on these recommendations.
+                </p>
+                <hr style={{ border: "none", borderTop: "1px solid var(--color-border-tertiary, #E5E7EB)", marginTop: 14 }} />
+              </div>
+
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#111827", margin: 0 }}>
+                Recommended portfolio
+              </h3>
+              <p style={{
+                fontSize: '12px',
+                color: 'var(--color-text-secondary)',
+                marginTop: '2px',
+                marginBottom: '16px'
+              }}>
+                Based on poverty rate, community demand, and current service quality · Real data from 1,976 LemonTree resources
+              </p>
+
+              {/* Two columns: donut + legend | neighborhood cards */}
+              <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+                <div style={{ width: 280, flexShrink: 0 }}>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <PieChart>
+                      <Pie
+                        data={allocationData}
+                        innerRadius={65}
+                        outerRadius={110}
+                        paddingAngle={3}
+                        dataKey="value"
+                        label={renderCenterLabel}
+                        labelLine={false}
+                      >
+                        {allocationData.map((_, i) => (
+                          <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div style={{ marginTop: 12 }}>
+                    {allocationData.map((item, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "3px 0",
+                          fontSize: 12,
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <div
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 2,
+                              background: DONUT_COLORS[i % DONUT_COLORS.length],
+                            }}
+                          />
+                          <span style={{ color: "var(--color-text-primary, #111827)" }}>{item.name}</span>
+                        </div>
+                        <span
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
-                            color: "#111827",
-                            marginBottom: 2,
+                            color: "var(--color-text-secondary, #6B7280)",
+                            fontVariantNumeric: "tabular-nums",
                           }}
                         >
-                          {r.name}
-                        </div>
-                        <div style={{ fontSize: 11, color: "#6B7280", ...MONO }}>
-                          {r.borough}, {r.zip}
-                        </div>
+                          ${item.value.toLocaleString()}
+                        </span>
                       </div>
-                      <div style={{ textAlign: "right", flexShrink: 0 }}>
-                        <div
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 800,
-                            color: "#2D6A4F",
-                            ...MONO,
-                          }}
-                        >
-                          ${r.dollars.toLocaleString()}
-                        </div>
-                        <div style={{ fontSize: 11, color: "#9CA3AF", ...MONO }}>
-                          {r.allocationPct}%
-                        </div>
-                      </div>
-                    </div>
-                    {/* Progress bar */}
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
+                  {allocationData.map((item, i) => (
+                    <NeighborhoodCard
+                      key={i}
+                      data={item}
+                      color={DONUT_COLORS[i % DONUT_COLORS.length]}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Estimated reach */}
+              <div
+                style={{
+                  borderTop: "1px solid var(--color-border-tertiary, #E5E7EB)",
+                  paddingTop: 20,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#111827",
+                    marginBottom: 14,
+                  }}
+                >
+                  Estimated reach
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: 16,
+                  }}
+                >
+                  {[
+                    {
+                      value: results.totalSubs.toLocaleString(),
+                      label: "families reached",
+                      sub: "combined subscribers",
+                    },
+                    {
+                      value: results.count,
+                      label: "resources supported",
+                      sub: "across top-impact sites",
+                    },
+                    {
+                      value: `${results.avgPoverty}%`,
+                      label: "avg poverty rate",
+                      sub: "in supported areas",
+                    },
+                  ].map(({ value, label, sub }) => (
                     <div
+                      key={label}
                       style={{
-                        height: 6,
-                        background: "#E5E7EB",
-                        borderRadius: 3,
-                        overflow: "hidden",
-                        marginBottom: 8,
+                        padding: "14px 16px",
+                        borderRadius: 10,
+                        background: "#F9FAFB",
+                        border: "1px solid #E5E7EB",
+                        textAlign: "center",
                       }}
                     >
                       <div
                         style={{
-                          height: "100%",
-                          width: `${r.allocationPct}%`,
-                          background: "#2D6A4F",
-                          borderRadius: 3,
-                          transition: "width 0.4s ease",
+                          fontSize: 24,
+                          fontWeight: 800,
+                          color: "#2D6A4F",
+                          ...MONO,
+                          lineHeight: 1,
                         }}
-                      />
+                      >
+                        {value}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#374151", fontWeight: 600, marginTop: 5 }}>
+                        {label}
+                      </div>
+                      <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2, ...MONO }}>
+                        {sub}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, color: "#9CA3AF", ...MONO }}>
-                      {r.subscriptions} subscribers · Poverty {r.povertyRate}% ·
-                      Rating {r.rating}
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 4,
-                        display: "inline-block",
-                        padding: "2px 8px",
-                        borderRadius: 6,
-                        background:
-                          r.impactScore >= 0.7 ? "#FEE2E2" : "#FEF3C7",
-                        color:
-                          r.impactScore >= 0.7 ? "#991B1B" : "#92400E",
-                        fontSize: 10,
-                        fontWeight: 700,
-                        ...MONO,
-                      }}
-                    >
-                      {r.impactScore >= 0.7
-                        ? "Critical need"
-                        : r.impactScore >= 0.6
-                        ? "High need"
-                        : "Elevated need"}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* Estimated reach */}
-            <div style={{ ...CARD }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#111827",
-                  marginBottom: 14,
-                }}
-              >
-                Estimated reach
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
-                  gap: 16,
-                }}
-              >
-                {[
-                  {
-                    value: results.totalSubs.toLocaleString(),
-                    label: "families reached",
-                    sub: "combined subscribers",
-                  },
-                  {
-                    value: results.count,
-                    label: "resources supported",
-                    sub: "across top-impact sites",
-                  },
-                  {
-                    value: `${results.avgPoverty}%`,
-                    label: "avg poverty rate",
-                    sub: "in supported areas",
-                  },
-                ].map(({ value, label, sub }) => (
-                  <div
-                    key={label}
-                    style={{
-                      padding: "14px 16px",
-                      borderRadius: 10,
-                      background: "#F9FAFB",
-                      border: "1px solid #E5E7EB",
-                      textAlign: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 24,
-                        fontWeight: 800,
-                        color: "#2D6A4F",
-                        ...MONO,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {value}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#374151",
-                        fontWeight: 600,
-                        marginTop: 5,
-                      }}
-                    >
-                      {label}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: "#9CA3AF",
-                        marginTop: 2,
-                        ...MONO,
-                      }}
-                    >
-                      {sub}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ZIP coverage */}
-            <div style={{ ...CARD }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#111827",
-                  marginBottom: 10,
-                }}
-              >
-                ZIP codes covered by this allocation
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {results.allocated.map((r, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "8px 12px",
-                      borderRadius: 8,
-                      background: "#F9FAFB",
-                      fontSize: 12,
-                      ...MONO,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontWeight: 800,
-                        color: "#2D6A4F",
-                        minWidth: 48,
-                      }}
-                    >
-                      {r.zip}
-                    </span>
-                    <span style={{ color: "#374151" }}>
-                      {r.borough}
-                    </span>
-                    <span style={{ color: "#9CA3AF", marginLeft: "auto" }}>
-                      poverty {r.povertyRate}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
 
             {/* Export row */}
             <div style={{ display: "flex", gap: 8 }}>
@@ -794,8 +885,10 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
               illustrative — actual funding needs vary by pantry. Data sourced
               from LemonTree platform + ACS 2024 ZIP demographics.
             </div>
-          </div>
-        )}
+            </div>
+          );
+        })()}
+        </div>
       </div>
     </div>
   );

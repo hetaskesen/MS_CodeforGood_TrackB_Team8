@@ -20,6 +20,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { govData as defaultGovData } from "@/lib/mockData";
+import { IconTrash, IconSparkles, IconFile } from "./Icons";
 
 // ── Variable catalog — all from real zip_demographics Supabase data ──────────
 const VARIABLES = [
@@ -331,7 +332,7 @@ function renderScatter(chart, zipDemographics) {
         </ScatterChart>
       </ResponsiveContainer>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center",
-        fontSize: 10, color: "#6B7280", marginTop: 4 }}>
+        fontSize: 10, color: "#6B7280", marginTop: 8, marginBottom: 8 }}>
         {Object.entries(BOROUGH_COLORS).filter(([b]) => b !== "Unknown").map(([b, c]) => (
           <span key={b} style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />
@@ -476,47 +477,103 @@ function autoTitle(chart) {
   return typeLabels[chart.chartType] ?? xLabel;
 }
 
-// ── AI Insight (Claude API) ───────────────────────────────────────────────────
+// ── Statistical summary helpers ───────────────────────────────────────────────
 
-async function generateInsight(chartConfig, output, zipDemographics) {
-  const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY;
-  const prompt = `You are analyzing food access data for LemonTree, a NYC nonprofit food resource finder.
+function computeSummary(xVar, yVar, zipDemographics) {
+  if (yVar) {
+    // Two-variable summary
+    const rows = zipDemographics.filter(
+      (z) => z[xVar] != null && z[yVar] != null
+    );
+    const count = rows.length;
+    if (count === 0) return { type: "two", count: 0, pearsonR: 0, boroughAverages: [], topOutliers: [] };
 
-Chart: ${chartConfig.chartType} showing ${chartConfig.xVar} ${chartConfig.yVar ? `vs ${chartConfig.yVar}` : ""}
+    const xVals = rows.map((z) => z[xVar]);
+    const yVals = rows.map((z) => z[yVar]);
+    const meanX = xVals.reduce((a, b) => a + b, 0) / count;
+    const meanY = yVals.reduce((a, b) => a + b, 0) / count;
+    const num = rows.reduce((s, z) => s + (z[xVar] - meanX) * (z[yVar] - meanY), 0);
+    const denX = Math.sqrt(rows.reduce((s, z) => s + (z[xVar] - meanX) ** 2, 0));
+    const denY = Math.sqrt(rows.reduce((s, z) => s + (z[yVar] - meanY) ** 2, 0));
+    const pearsonR = denX && denY ? Math.round((num / (denX * denY)) * 100) / 100 : 0;
 
-Data context: Using real NYC ZIP code demographics.
+    const BOROUGHS = ["Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"];
+    const boroughAverages = BOROUGHS.map((b) => {
+      const bRows = rows.filter((z) => z.borough === b);
+      if (!bRows.length) return null;
+      const avgX = Math.round((bRows.reduce((s, z) => s + z[xVar], 0) / bRows.length) * 10) / 10;
+      const avgY = Math.round((bRows.reduce((s, z) => s + z[yVar], 0) / bRows.length) * 10) / 10;
+      return { borough: b, avgX, avgY };
+    }).filter(Boolean);
 
-Write exactly 2 sentences:
-1. The single most important finding in this data
-2. One specific, actionable implication for food access policy or donor funding
+    // Top 3 outliers: highest x, lowest y (most underserved)
+    const topOutliers = [...rows]
+      .sort((a, b) => b[xVar] - a[xVar])
+      .slice(0, 3)
+      .map((z) => ({ zip: z.zip, borough: z.borough, x: z[xVar], y: z[yVar] }));
 
-Be specific. Be direct. No preamble.`;
-
-  if (!apiKey) {
-    return "High-need areas often correlate with lower resource density, suggesting a need for targeted expansion. Donors should prioritize funding in these underserved zones to maximize impact.";
+    return { type: "two", count, pearsonR, boroughAverages, topOutliers };
   }
+
+  // Single-variable summary
+  const rows = zipDemographics.filter((z) => z[xVar] != null && !isNaN(z[xVar]));
+  const count = rows.length;
+  if (count === 0) return { type: "single", count: 0, mean: 0, median: 0, min: 0, max: 0, top3: [], bottom3: [] };
+
+  const vals = rows.map((z) => z[xVar]);
+  const sum = vals.reduce((a, b) => a + b, 0);
+  const mean = Math.round((sum / count) * 10) / 10;
+  const sorted = [...vals].sort((a, b) => a - b);
+  const median = Math.round(sorted[Math.floor(count / 2)] * 10) / 10;
+  const min = Math.round(sorted[0] * 10) / 10;
+  const max = Math.round(sorted[count - 1] * 10) / 10;
+
+  const sortedRows = [...rows].sort((a, b) => b[xVar] - a[xVar]);
+  const top3 = sortedRows.slice(0, 3).map((z) => ({ zip: z.zip, borough: z.borough, value: z[xVar] }));
+  const bottom3 = sortedRows.slice(-3).reverse().map((z) => ({ zip: z.zip, borough: z.borough, value: z[xVar] }));
+
+  return { type: "single", count, mean, median, min, max, top3, bottom3 };
+}
+
+// ── AI Insight — via /api/insight (server-side, cached, Haiku model) ─────────
+
+async function generateInsight(chartConfig, _output, zipDemographics, persona) {
+  const { xVar, yVar, chartType } = chartConfig;
+  const xMeta = VARIABLE_MAP[xVar];
+  const yMeta = yVar ? VARIABLE_MAP[yVar] : null;
+
+  const summary = computeSummary(xVar, yVar ?? null, zipDemographics);
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/insight", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }],
+        xVar,
+        xLabel: xMeta?.label ?? xVar,
+        yVar: yVar ?? null,
+        yLabel: yMeta?.label ?? null,
+        chartType,
+        persona: persona ?? "donor",
+        summary,
       }),
     });
-    if (!response.ok) throw new Error("API error");
-    const data = await response.json();
-    const text = data.content?.[0]?.text ?? "";
-    return text.trim() || "Key finding: High-need areas correlate with lower resource density; targeted funding can improve access.";
+    if (!res.ok) throw new Error("API error");
+    const data = await res.json();
+    return data.insight ?? buildClientFallback(persona, xMeta?.label ?? xVar, summary);
   } catch {
-    return "Key finding: High-need areas correlate with lower resource density; targeted funding can improve access.";
+    return buildClientFallback(persona, xMeta?.label ?? xVar, summary);
   }
+}
+
+function buildClientFallback(persona, xLabel, summary) {
+  if (persona === "pantry-operator") {
+    return `${xLabel} varies significantly across NYC neighborhoods — understanding where your pantry sits relative to the citywide average helps prioritize outreach. ZIP ${summary?.top3?.[0]?.zip ?? "areas"} in ${summary?.top3?.[0]?.borough ?? "high-need boroughs"} shows the highest values and may benefit most from targeted support.`;
+  }
+  if (persona === "government") {
+    return `ZIPs with the lowest ${xLabel} (e.g. ${summary?.bottom3?.[0]?.zip ?? "underserved areas"}) show a persistent gap compared to the citywide mean of ${summary?.mean ?? "—"}. Targeted policy interventions in these areas would address the most acute service deficits.`;
+  }
+  return `High-need areas show lower ${xLabel}, with ZIP ${summary?.bottom3?.[0]?.zip ?? "data"} among the most under-resourced in NYC. Prioritizing donations to these neighborhoods would have the greatest measurable impact on food access.`;
 }
 
 // ── Government context for Read more ───────────────────────────────────────────
@@ -534,10 +591,10 @@ function getGovContext(gd) {
 
 // ── Chart card component ──────────────────────────────────────────────────────
 
-function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyData, onToggleOverlay, onToggleExpanded, govData: govDataProp, zipDemographics }) {
+function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyData, onToggleOverlay, onToggleExpanded, govData: govDataProp, zipDemographics, aiEnabled }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const firstSentence = chart.aiInsight
-    ? ((chart.aiInsight.match(/^[^.!?]+[.!?]?/) ?? [chart.aiInsight])[0] || "").trim()
+    ? ((chart.aiInsight.match(/^.*?[.!?](?=\s|$)/) ?? [chart.aiInsight])[0] || "").trim()
     : "";
   const shortInsight = firstSentence ? (firstSentence.slice(0, 120) + (firstSentence.length > 120 ? "…" : "")) : "";
   const govContext = getGovContext(govDataProp);
@@ -555,7 +612,7 @@ function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyD
         <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
           <button type="button" onClick={() => onMove("up")} disabled={index === 0} aria-label="Move up" style={{ padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, background: "#fff", cursor: index === 0 ? "not-allowed" : "pointer", opacity: index === 0 ? 0.5 : 1 }}>↑</button>
           <button type="button" onClick={() => onMove("down")} disabled={index === total - 1} aria-label="Move down" style={{ padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, background: "#fff", cursor: index === total - 1 ? "not-allowed" : "pointer", opacity: index === total - 1 ? 0.5 : 1 }}>↓</button>
-          <button type="button" onClick={() => onRemove()} aria-label="Remove" style={{ padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, background: "#fff", cursor: "pointer" }}>🗑</button>
+          <button type="button" onClick={() => onRemove()} aria-label="Remove" style={{ padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", color: "#6B7280" }}><IconTrash size={13} /></button>
           <div style={{ position: "relative", display: "inline-block" }}>
             <button type="button" onClick={() => setMenuOpen((o) => !o)} aria-label="Menu" style={{ padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, background: "#fff", cursor: "pointer" }}>⋯</button>
             {menuOpen && (
@@ -571,14 +628,14 @@ function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyD
         </div>
       </div>
 
-      {/* Chart area 320px */}
-      <div style={{ minHeight: 320 }}>
+      {/* Chart area 320px — extra bottom margin to avoid legend/text overlap */}
+      <div style={{ minHeight: 320, marginBottom: 20 }}>
         {renderChartContent(chart, zipDemographics)}
       </div>
 
       {/* AI insight */}
-      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #F3F4F6" }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", marginBottom: 6 }}>🤖 AI insight</div>
+      {aiEnabled && <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #F3F4F6" }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", marginBottom: 6, display: "flex", alignItems: "center", gap: 5 }}><IconSparkles size={12} /> AI insight</div>
         {chart.aiLoading ? (
           <p style={{ fontSize: 12, color: "#9CA3AF", margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ animation: "pulse 1.2s ease-in-out infinite" }}>Analyzing data…</span>
@@ -601,14 +658,14 @@ function ChartCard({ chart, index, total, onMove, onRemove, onDuplicate, onCopyD
             </div>
           </>
         ) : null}
-      </div>
+      </div>}
     </div>
   );
 }
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function VisualizationBuilder({ govData: govDataProp, donorData: donorDataProp }) {
+export default function VisualizationBuilder({ govData: govDataProp, donorData: donorDataProp, exportContentRef, persona, aiEnabled = true }) {
   const govData = govDataProp ?? defaultGovData;
   const zipDemographics = govData?.zipDemographics ?? [];
   const [charts, setCharts] = useState([]);
@@ -661,24 +718,22 @@ export default function VisualizationBuilder({ govData: govDataProp, donorData: 
         chartType: finalType,
         title: autoTitle({ xVar: finalX, yVar: finalY, chartType: finalType }),
         aiInsight: null,
-        aiLoading: true,
+        aiLoading: aiEnabled,
         overlayVisible: false,
         expanded: false,
       };
       
       setCharts((prev) => [...prev, newChart]);
 
-      // Generate AI insight
-      // Note: we don't compute output here anymore, renderChartContent does it on fly
-      // but we might need some data summary for AI. 
-      // For now, passing null as output to generateInsight and letting it use defaults or we can pass a summary.
-      generateInsight(newChart, null, zipDemographics).then((insight) => {
-        setCharts((prev) =>
-          prev.map((c) => (c.id === newChart.id ? { ...c, aiInsight: insight, aiLoading: false } : c))
-        );
-      });
+      if (aiEnabled) {
+        generateInsight(newChart, null, zipDemographics, persona).then((insight) => {
+          setCharts((prev) =>
+            prev.map((c) => (c.id === newChart.id ? { ...c, aiInsight: insight, aiLoading: false } : c))
+          );
+        });
+      }
     },
-    [xVar, yVar, chartType, zipDemographics]
+    [xVar, yVar, chartType, zipDemographics, persona, aiEnabled]
   );
 
   const removeChart = useCallback((id) => {
@@ -828,8 +883,8 @@ export default function VisualizationBuilder({ govData: govDataProp, donorData: 
         </div>
       </div>
 
-      {/* Right: canvas with dot grid */}
-      <div style={{ flex: 1, minWidth: 0, position: "relative", ...DOT_GRID, borderRadius: 14, padding: "20px 24px", paddingBottom: 80 }}>
+      {/* Right: canvas with dot grid — ref for PNG export (excludes sidebar) */}
+      <div ref={exportContentRef} style={{ flex: 1, minWidth: 0, position: "relative", ...DOT_GRID, borderRadius: 14, padding: "20px 24px", paddingBottom: 80 }}>
         {charts.length === 0 ? (
           /* Empty state */
           <div style={{ display: "flex", gap: 24, alignItems: "center", justifyContent: "center", minHeight: 380, flexWrap: "wrap" }}>
@@ -877,13 +932,13 @@ export default function VisualizationBuilder({ govData: govDataProp, donorData: 
                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                   }}
                 >
-                  ✦ {q.label}
+                  {q.label}
                 </button>
               ))}
             </div>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
             {charts.map((chart, index) => (
               <ChartCard
                 key={chart.id}
@@ -898,6 +953,7 @@ export default function VisualizationBuilder({ govData: govDataProp, donorData: 
                 onToggleExpanded={() => toggleExpanded(chart.id)}
                 govData={govData}
                 zipDemographics={zipDemographics}
+                aiEnabled={aiEnabled}
               />
             ))}
           </div>
@@ -918,9 +974,12 @@ export default function VisualizationBuilder({ govData: govDataProp, donorData: 
                 fontWeight: 800,
                 cursor: "pointer",
                 boxShadow: "0 4px 14px rgba(45,106,79,0.35)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
-              📄 Generate Report ({charts.length} charts)
+              <IconFile size={15} /> Generate Report ({charts.length} charts)
             </button>
           </div>
         )}
@@ -981,9 +1040,9 @@ function ReportModal({ charts, onClose, govData: govDataProp, zipDemographics })
         <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 24, ...MONO }}>Generated: March 14, 2026</div>
 
         {charts.map((chart, i) => (
-          <div key={chart.id} style={{ marginBottom: 28, paddingBottom: 28, borderBottom: i < charts.length - 1 ? "1px solid #E5E7EB" : "none" }}>
+          <div key={chart.id} style={{ marginBottom: 36, paddingBottom: 36, borderBottom: i < charts.length - 1 ? "1px solid #E5E7EB" : "none" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 8 }}>{chart.title ?? "Chart"}</div>
-            <div style={{ height: 200 }}>{renderChartContent(chart, zipDemographics)}</div>
+            <div style={{ minHeight: 240, marginBottom: 16 }}>{renderChartContent(chart, zipDemographics)}</div>
             {chart.aiInsight && <p style={{ fontSize: 12, color: "#374151", lineHeight: 1.7, marginTop: 12 }}>{chart.aiInsight}</p>}
             <ul style={{ fontSize: 11, color: "#6B7280", marginTop: 8, paddingLeft: 18 }}>
               {getGovContext(govDataProp).map((line, j) => <li key={j}>{line}</li>)}

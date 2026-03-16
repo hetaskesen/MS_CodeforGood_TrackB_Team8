@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { getTabTypeIcon, IconCheck } from "./Icons";
 
 const BASE_TAB_OPTIONS = [
-  { type: "explore", label: "Explore Resources", icon: "🔍" },
-  { type: "report-builder", label: "Report Builder", icon: "📊" },
-  { type: "funding-simulator", label: "Funding Simulator", icon: "💡" },
+  { type: "explore", label: "Explore Resources" },
+  { type: "report-builder", label: "Report Builder" },
+  { type: "funding-simulator", label: "Funding Simulator" },
 ];
 
 const ADMIN_TAB_OPTIONS = [
   ...BASE_TAB_OPTIONS,
-  { type: "reviews-intelligence", label: "Reviews Intelligence", icon: "🛡️" },
+  { type: "reviews-intelligence", label: "Feedback Analytics" },
 ];
 
 export default function TabPicker({
@@ -124,10 +125,10 @@ export default function TabPicker({
                 e.currentTarget.style.background = "transparent";
               }}
             >
-              <span style={{ fontSize: 14 }}>{opt.icon}</span>
+              <span style={{ color: alreadyOpen ? "#9CA3AF" : "#374151", display: "flex" }}>{getTabTypeIcon(opt.type, 15)}</span>
               {opt.label}
               {alreadyOpen && (
-                <span style={{ marginLeft: "auto", color: "#2D6A4F" }}>✓</span>
+                <span style={{ marginLeft: "auto", color: "#2D6A4F", display: "flex" }}><IconCheck size={13} /></span>
               )}
             </button>
           );
@@ -176,11 +177,11 @@ export default function TabPicker({
                     if (!isActive) e.currentTarget.style.background = "transparent";
                   }}
                 >
-                  <span style={{ fontSize: 12 }}>{tab.icon}</span>
+                  <span style={{ color: isActive ? "#2D6A4F" : "#9CA3AF", display: "flex" }}>{getTabTypeIcon(tab.type, 13)}</span>
                   <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {tab.label}
                   </span>
-                  {isActive && <span style={{ marginLeft: "auto" }}>✓</span>}
+                  {isActive && <span style={{ marginLeft: "auto", color: "#2D6A4F", display: "flex" }}><IconCheck size={12} /></span>}
                 </button>
               );
             })}

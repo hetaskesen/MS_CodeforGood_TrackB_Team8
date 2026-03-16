@@ -170,7 +170,7 @@ function OverviewTab({ filters, govData }) {
       <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 12, padding: "14px 16px", marginBottom: 12 }}>
         <div style={{ fontSize: 30, fontWeight: 800, color: "#D97706", lineHeight: 1 }}>
           {avgRating > 0 ? avgRating.toFixed(2) : "—"} <span style={{ fontSize: 16, fontWeight: 500, color: "#92400E" }}>/ 5.0</span>
-        </div>
+          </div>
         <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
           City-wide average rating across {totalRated.toLocaleString()} rated resources
         </div>
@@ -647,8 +647,8 @@ function TransitAccessTab({ govData }) {
                 </div>
                 <span style={{ background: "#DBEAFE", color: "#1E40AF", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>
                   {g.noVehicleRate.toFixed(1)}% no vehicle
-                </span>
-              </div>
+                    </span>
+                  </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px 12px", fontSize: 11, color: "#6B7280" }}>
                 <span>Walkable resources: <strong style={{ color: "#374151" }}>{g.resourcesWithinHalfMile}</strong></span>
                 <span>Nearest: <strong style={{ color: "#374151" }}>{g.nearestResourceMiles > 0 ? `${g.nearestResourceMiles} mi` : "—"}</strong></span>
@@ -692,8 +692,8 @@ function ReliabilityTab({ govData }) {
                 <span style={{ color: "#374151", fontWeight: 600 }}>{b.borough}</span>
                 <span style={{ fontWeight: 700, color: b.avgConfirmedOpenRate < 50 ? "#DC2626" : b.avgConfirmedOpenRate < 70 ? "#D97706" : "#166534" }}>
                   {b.avgConfirmedOpenRate.toFixed(1)}% confirmed open
-                </span>
-              </div>
+                    </span>
+                  </div>
               <div style={{ height: 7, borderRadius: 4, background: "#F3F4F6", overflow: "hidden" }}>
                 <div style={{
                   height: "100%",
@@ -720,8 +720,8 @@ function ReliabilityTab({ govData }) {
                 </div>
                 <span style={{ background: "#FEF3C7", color: "#92400E", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>
                   {g.avgSkipRangeCount} avg skips
-                </span>
-              </div>
+                    </span>
+                  </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 12px", fontSize: 11, color: "#6B7280" }}>
                 <span>Open rate: <strong style={{ color: "#374151" }}>{g.confirmedOpenRate.toFixed(1)}%</strong></span>
                 <span>Poverty: <strong style={{ color: "#374151" }}>{(g.poverty || 0).toFixed(1)}%</strong></span>
@@ -762,8 +762,8 @@ function VulnerablePopTab({ govData }) {
                 </div>
                 <span style={{ background: "#EDE9FE", color: "#5B21B6", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>
                   {g.pctSeniors.toFixed(1)}% seniors
-                </span>
-              </div>
+                    </span>
+                  </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 12px", fontSize: 11, color: "#6B7280" }}>
                 <span>Appt-only share: <strong style={{ color: "#374151" }}>{g.apptOnlyShare.toFixed(1)}%</strong></span>
                 <span>Walk-in resources: <strong style={{ color: "#374151" }}>{g.walkInCount}</strong></span>
@@ -794,13 +794,13 @@ function VulnerablePopTab({ govData }) {
                 </div>
               </div>
             ))}
-          </div>
+        </div>
           <div style={{ padding: "10px 12px", background: "#FFF7ED", borderLeft: "3px solid #EA580C", borderRadius: "0 8px 8px 0", fontSize: 12, color: "#9A3412", lineHeight: 1.5, marginTop: 10 }}>
             These {dietaryGaps.length} ZIP codes have active food resources but none serving dietary-specific needs — a gap affecting hundreds of thousands of residents.
           </div>
         </>
       )}
-    </div>
+      </div>
   );
 }
 
@@ -908,7 +908,7 @@ export default function GovernmentPanel({ govData = defaultGovData, dataSource =
             style={{ fontSize: 11, color: "#DC2626", background: "none", border: "none", cursor: "pointer", padding: "4px 0", fontWeight: 600 }}
           >
             Clear ({activeFilterCount})
-          </button>
+        </button>
         )}
         {activeFilterCount > 0 && (
           <span style={{ fontSize: 11, color: "#6B7280", marginLeft: 2 }}>
@@ -941,7 +941,7 @@ export default function GovernmentPanel({ govData = defaultGovData, dataSource =
               }}
             >
               {t.emoji} {t.label}
-            </button>
+        </button>
           );
         })}
       </div>

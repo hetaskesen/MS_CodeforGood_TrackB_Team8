@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { getPersonaIcon } from "./Icons";
 
 const PERSONAS = [
-  { id: "pantry-operator", label: "Resource Operator", icon: "🏪" },
-  { id: "donor", label: "Donor / Funder", icon: "💚" },
-  { id: "government", label: "Government", icon: "🏛" },
-  { id: "admin", label: "Admin", icon: "⚙️" },
+  { id: "pantry-operator", label: "Resource Operator" },
+  { id: "donor", label: "Donor / Funder" },
+  { id: "government", label: "Government" },
+  { id: "admin", label: "Admin" },
 ];
 
 export default function PersonaDropdown({ activePersona, onPersonaChange }) {
@@ -53,7 +54,7 @@ export default function PersonaDropdown({ activePersona, onPersonaChange }) {
         aria-haspopup="listbox"
       >
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 16 }}>{current.icon}</span>
+          <span style={{ display: "flex" }}>{getPersonaIcon(current.id, 15)}</span>
           {current.label}
         </span>
         <svg
@@ -121,7 +122,7 @@ export default function PersonaDropdown({ activePersona, onPersonaChange }) {
                 if (activePersona !== p.id) e.currentTarget.style.background = "transparent";
               }}
             >
-              <span style={{ fontSize: 16 }}>{p.icon}</span>
+              <span style={{ display: "flex", color: activePersona === p.id ? "#2D6A4F" : "#6B7280" }}>{getPersonaIcon(p.id, 15)}</span>
               {p.label}
             </button>
           ))}

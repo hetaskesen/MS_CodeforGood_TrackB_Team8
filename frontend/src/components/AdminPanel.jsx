@@ -726,7 +726,7 @@ export default function AdminPanel() {
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <span style={{ fontSize: 20 }}>🛡️</span>
             <h1 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
-              Admin — Reviews Intelligence
+              Admin — Feedback Analytics
             </h1>
             {!loading && (
               <span style={{

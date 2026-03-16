@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { IconSearch, IconBarChart } from "./Icons";
 
 const modes = [
   { id: "operator", label: "Resource operator", icon: "" },
@@ -70,6 +71,9 @@ export default function Navbar({
             whiteSpace: "nowrap",
             transition: "background 0.15s",
             fontFamily: "DM Sans, system-ui, sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
           }}
           onMouseEnter={(e) =>
             (e.currentTarget.style.background = "rgba(255,255,255,0.75)")
@@ -78,7 +82,7 @@ export default function Navbar({
             (e.currentTarget.style.background = "rgba(255,255,255,0.45)")
           }
         >
-          🔍 Explore resources
+          <IconSearch size={13} /> Explore resources
         </Link>
         <Link
           href="/report-builder"
@@ -94,6 +98,9 @@ export default function Navbar({
             whiteSpace: "nowrap",
             transition: "background 0.15s",
             fontFamily: "DM Sans, system-ui, sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
           }}
           onMouseEnter={(e) =>
             (e.currentTarget.style.background = "rgba(255,255,255,0.75)")
@@ -102,7 +109,7 @@ export default function Navbar({
             (e.currentTarget.style.background = "rgba(255,255,255,0.45)")
           }
         >
-          📊 Report Builder
+          <IconBarChart size={13} /> Report Builder
         </Link>
       </div>
 

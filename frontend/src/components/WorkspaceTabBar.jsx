@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import { getTabTypeIcon } from "./Icons";
 
 const MAX_LABEL_LEN = 20;
 
@@ -151,7 +152,7 @@ export default function WorkspaceTabBar({
                   if (!isActive) e.currentTarget.style.background = tab.pinned ? "#EDF7ED" : "#F5F5F2";
                 }}
               >
-                <span style={{ fontSize: 14, flexShrink: 0 }}>{tab.icon}</span>
+                <span style={{ display: "flex", flexShrink: 0, color: isActive ? "#2D6A4F" : "#888" }}>{getTabTypeIcon(tab.type, 14)}</span>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {truncate(tab.label)}
                 </span>

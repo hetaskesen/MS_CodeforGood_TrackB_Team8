@@ -115,7 +115,7 @@ export default function DashboardPage() {
       explore: { label: "Explore Resources", icon: "🔍" },
       "report-builder": { label: "Report Builder", icon: "📊" },
       "funding-simulator": { label: "Funding Simulator", icon: "💡" },
-      "reviews-intelligence": { label: "Reviews Intelligence", icon: "🛡️" },
+      "reviews-intelligence": { label: "Feedback Analytics", icon: "🛡️" },
     };
     const cfg = configs[type];
     if (!cfg) return;
@@ -313,7 +313,7 @@ export default function DashboardPage() {
       case "report-builder":
         return (
           <div className="h-full overflow-auto bg-[#FAFAF8]">
-            <ReportBuilder govData={govData ?? mockGovData} donorData={derivedDonorData} />
+            <ReportBuilder govData={govData ?? mockGovData} donorData={derivedDonorData} persona={activePersona} />
           </div>
         );
       case "funding-simulator":
@@ -341,9 +341,16 @@ export default function DashboardPage() {
     .slice(0, 2);
 
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#f5f3ef]" style={{ minWidth: 1440 }}>
+    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#f5f3ef] dashboard-page" style={{ minWidth: 1440 }}>
+      <style>{`
+        @media print {
+          .dashboard-page .dashboard-no-print { display: none !important; }
+          .dashboard-page [data-content-area] { height: auto !important; min-height: 0 !important; overflow: visible !important; }
+        }
+      `}</style>
       {/* ── Top nav ── */}
       <nav
+        className="dashboard-no-print"
         style={{
           background: "var(--theme-navbar-bg, #FDE97A)",
           display: "grid",
@@ -414,6 +421,7 @@ export default function DashboardPage() {
       </nav>
 
       {/* ── Tab bar ── */}
+      <div className="dashboard-no-print">
       <WorkspaceTabBar
         tabs={tabs}
         activeTabId={activeTabId}
@@ -434,9 +442,11 @@ export default function DashboardPage() {
         anchorRef={addButtonRef}
         activePersona={activePersona}
       />
+      </div>
 
       {/* ── Content area ── */}
       <div
+        data-content-area
         className="min-w-0 flex-1 overflow-hidden bg-white border-t border-[#E5E5E0]"
         style={{ height: `calc(100vh - ${NAV_HEIGHT}px - ${TAB_BAR_HEIGHT}px)` }}
       >
