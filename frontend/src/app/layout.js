@@ -2,7 +2,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 
 export const metadata = {
-  title: "Lemontree Insights",
+  title: "LemonTree Grove",
   description: "Data insights platform for food access partners",
   icons: {
     icon: "https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg",

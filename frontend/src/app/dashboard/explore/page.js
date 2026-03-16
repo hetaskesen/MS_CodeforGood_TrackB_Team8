@@ -267,7 +267,7 @@ function ExploreFilters({ meta, filters, setFilters }) {
                   }}
                   className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors whitespace-nowrap ${
                     isActive
-                      ? "bg-sand-800 text-white border-sand-800"
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm"
                       : "bg-white text-sand-600 border-sand-200 hover:border-sand-400"
                   }`}
                 >

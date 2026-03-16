@@ -139,6 +139,13 @@ function AnimatedBackground() {
   );
 }
 
+// Map login card persona ids → dashboard persona ids
+const PERSONA_MAP = {
+  operator: "pantry-operator",
+  donor: "donor",
+  government: "government",
+};
+
 export default function LoginPageContent() {
   const router = useRouter();
   const [isFlipped, setIsFlipped] = useState(false);
@@ -147,7 +154,13 @@ export default function LoginPageContent() {
 
   function handleSignIn(e) {
     e.preventDefault();
-    router.push("/dashboard");
+    const dashPersona = PERSONA_MAP[activePersona] ?? "pantry-operator";
+    router.push(`/dashboard?persona=${dashPersona}`);
+  }
+
+  function handleEmployeeSignIn(e) {
+    e.preventDefault();
+    router.push("/dashboard?persona=admin");
   }
 
   const inputStyle = {
@@ -193,6 +206,19 @@ export default function LoginPageContent() {
             alt="Lemontree"
             style={{ height: 20, marginLeft: -6 }}
           />
+          <span
+            style={{
+              fontFamily: '"Aptos", "Aptos Light", "Segoe UI Variable", "Segoe UI", sans-serif',
+              fontSize: 18,
+              fontWeight: 300,
+              color: "#3D2200",
+              marginLeft: 2,
+              lineHeight: 1,
+              opacity: 0.9,
+            }}
+          >
+            Grove
+          </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <a href="#" style={{ fontSize: 13, fontWeight: 500, color: "#3D2200", textDecoration: "none" }}>About</a>
@@ -244,10 +270,13 @@ export default function LoginPageContent() {
               letterSpacing: "-0.5px",
               color: "#2a2a2a",
             }}>
-              Partner Portal
+              LemonTree{" "}
+              <span style={{ fontFamily: '"Aptos", "Aptos Light", "Segoe UI Variable", "Segoe UI", sans-serif', fontWeight: 300, fontSize: 37, color: "#1D9E75" }}>
+                Grove
+              </span>
             </h1>
             <p style={{ fontSize: 14, color: "#888", margin: 0 }}>
-              Sign in to access your dashboard
+              Sign in to access your partner dashboard
             </p>
           </div>
 
@@ -389,7 +418,7 @@ export default function LoginPageContent() {
                 Access internal administration tools
               </p>
 
-              <form onSubmit={(e) => e.preventDefault()} style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
+              <form onSubmit={handleEmployeeSignIn} style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
                 <div style={{ position: "relative" }}>
                   <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#9a9a9a" }}/>
                   <input type="email" placeholder="Work email" style={inputStyle}/>
@@ -476,6 +505,19 @@ export default function LoginPageContent() {
                 alt="Lemontree"
                 style={{ height: 16, marginLeft: -4 }}
               />
+              <span
+                style={{
+              fontFamily: '"Aptos", "Aptos Light", "Segoe UI Variable", "Segoe UI", sans-serif',
+              fontSize: 16,
+              fontWeight: 300,
+              color: "#3D2200",
+              marginLeft: 2,
+              lineHeight: 1,
+              opacity: 0.9,
+                }}
+              >
+                Grove
+              </span>
             </div>
             <div style={{ background: "#fff", borderRadius: 6, padding: "6px 10px", fontSize: 10 }}>
               <div style={{ fontWeight: 700, color: "#888", fontSize: 8, textTransform: "uppercase" }}>Gold Transparency</div>

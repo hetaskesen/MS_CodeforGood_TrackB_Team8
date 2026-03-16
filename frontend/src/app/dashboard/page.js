@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import CensusLayerControls from "@/components/CensusLayerControls.jsx";
 import PersonaDropdown from "@/components/PersonaDropdown";
@@ -69,11 +69,20 @@ function getDefaultTabs(persona) {
   }
 }
 
+const VALID_PERSONAS = new Set(["pantry-operator", "donor", "government", "admin"]);
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [activePersona, setActivePersona] = useState("pantry-operator");
-  const [tabs, setTabs] = useState(() => getDefaultTabs("pantry-operator"));
-  const [activeTabId, setActiveTabId] = useState("dashboard-pantry");
+  const searchParams = useSearchParams();
+
+  const initPersona = (() => {
+    const p = searchParams?.get("persona");
+    return VALID_PERSONAS.has(p) ? p : "pantry-operator";
+  })();
+
+  const [activePersona, setActivePersona] = useState(initPersona);
+  const [tabs, setTabs] = useState(() => getDefaultTabs(initPersona));
+  const [activeTabId, setActiveTabId] = useState(() => getDefaultTabs(initPersona)[0]?.id ?? "dashboard-pantry");
   const [tabPickerOpen, setTabPickerOpen] = useState(false);
 
   const [censusLayer, setCensusLayer] = useState(null);
@@ -382,6 +391,19 @@ export default function DashboardPage() {
             style={{ height: "20px", marginLeft: "-6px" }}
             onError={(e) => (e.target.style.display = "none")}
           />
+          <span
+            style={{
+              fontFamily: '"Aptos", "Aptos Light", "Segoe UI Variable", "Segoe UI", sans-serif',
+              fontSize: 18,
+              fontWeight: 300,
+              color: "#3D2200",
+              marginLeft: 2,
+              lineHeight: 1,
+              opacity: 0.9,
+            }}
+          >
+            Grove
+          </span>
         </div>
 
         <PersonaDropdown activePersona={activePersona} onPersonaChange={handlePersonaChange} />

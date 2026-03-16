@@ -407,12 +407,86 @@ function renderChartContent(chart, zipDemographics) {
 
 // ── AI helpers ────────────────────────────────────────────────────────────────
 
+function computeSummary(xVar, yVar, zipDemographics) {
+  const vals = zipDemographics
+    .map(z => ({ zip: z.zip_code, borough: z.borough, x: z[xVar], y: yVar ? z[yVar] : undefined }))
+    .filter(z => z.x != null && (yVar ? z.y != null : true));
+
+  if (vals.length === 0) return { type: "single", count: 0 };
+
+  if (!yVar) {
+    const sorted = [...vals].sort((a, b) => b.x - a.x);
+    const xs = vals.map(v => v.x);
+    const mean = +(xs.reduce((s, v) => s + v, 0) / xs.length).toFixed(2);
+    const mid = Math.floor(xs.length / 2);
+    const sortedXs = [...xs].sort((a, b) => a - b);
+    const median = +(xs.length % 2 === 0 ? (sortedXs[mid - 1] + sortedXs[mid]) / 2 : sortedXs[mid]).toFixed(2);
+    return {
+      type: "single",
+      count: vals.length,
+      mean, median,
+      min: +Math.min(...xs).toFixed(2),
+      max: +Math.max(...xs).toFixed(2),
+      top3: sorted.slice(0, 3).map(v => ({ zip: v.zip, borough: v.borough, value: +v.x.toFixed(2) })),
+      bottom3: sorted.slice(-3).reverse().map(v => ({ zip: v.zip, borough: v.borough, value: +v.x.toFixed(2) })),
+    };
+  }
+
+  const n = vals.length;
+  const meanX = vals.reduce((s, v) => s + v.x, 0) / n;
+  const meanY = vals.reduce((s, v) => s + v.y, 0) / n;
+  const num = vals.reduce((s, v) => s + (v.x - meanX) * (v.y - meanY), 0);
+  const denX = Math.sqrt(vals.reduce((s, v) => s + (v.x - meanX) ** 2, 0));
+  const denY = Math.sqrt(vals.reduce((s, v) => s + (v.y - meanY) ** 2, 0));
+  const pearsonR = denX && denY ? +(num / (denX * denY)).toFixed(3) : 0;
+
+  const boroughMap = {};
+  vals.forEach(v => {
+    if (!boroughMap[v.borough]) boroughMap[v.borough] = { sumX: 0, sumY: 0, count: 0 };
+    boroughMap[v.borough].sumX += v.x;
+    boroughMap[v.borough].sumY += v.y;
+    boroughMap[v.borough].count += 1;
+  });
+  const boroughAverages = Object.entries(boroughMap).map(([borough, d]) => ({
+    borough, avgX: +(d.sumX / d.count).toFixed(2), avgY: +(d.sumY / d.count).toFixed(2),
+  }));
+
+  const residuals = vals.map(v => ({ ...v, residual: Math.abs(v.y - (meanY + (pearsonR * (denY / denX || 1)) * (v.x - meanX))) }));
+  const topOutliers = [...residuals].sort((a, b) => b.residual - a.residual).slice(0, 3)
+    .map(v => ({ zip: v.zip, borough: v.borough, x: +v.x.toFixed(2), y: +v.y.toFixed(2) }));
+
+  return { type: "bivariate", count: n, pearsonR, boroughAverages, topOutliers };
+}
+
+function buildClientFallback(persona, xLabel, summary) {
+  const top = summary?.top3?.[0];
+  const bot = summary?.bottom3?.[0];
+  if (persona === "pantry-operator") {
+    return `${xLabel} varies significantly across NYC ZIPs — ZIP ${top?.zip ?? "data"} shows the highest value in this dataset. Understanding where your pantry sits relative to neighborhood averages can help you prioritize outreach and request targeted supply support.`;
+  }
+  if (persona === "government") {
+    return `ZIPs in the bottom quartile for ${xLabel} show a persistent gap relative to citywide averages (mean: ${summary?.mean ?? "—"}). Targeted allocation of city resources toward these areas would address the most acute service deficits.`;
+  }
+  return `High-need areas often show lower ${xLabel}, with ZIP ${bot?.zip ?? "data"} among the most under-resourced in NYC. Prioritizing donations to these neighborhoods would have the greatest measurable impact on food access.`;
+}
+
 async function generateInsight(chart, _unused, zipDemographics, persona) {
   try {
-    const res = await fetch("/api/reviews/ai-summary");
-    if (!res.ok) return null;
+    const xVar = chart.xVar;
+    const yVar = chart.yVar ?? null;
+    const xLabel = VARIABLE_MAP[xVar]?.label ?? xVar;
+    const yLabel = yVar ? (VARIABLE_MAP[yVar]?.label ?? yVar) : null;
+    const summary = computeSummary(xVar, yVar, zipDemographics);
+
+    const res = await fetch("/api/insight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ xVar, xLabel, yVar, yLabel, chartType: chart.chartType, persona, summary }),
+    });
+
+    if (!res.ok) return buildClientFallback(persona, xLabel, summary);
     const data = await res.json();
-    return data?.summary ?? null;
+    return data?.insight || buildClientFallback(persona, xLabel, summary);
   } catch {
     return null;
   }

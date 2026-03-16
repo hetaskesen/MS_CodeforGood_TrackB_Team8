@@ -504,10 +504,10 @@ export default function MapView({
 
       if (dimMarkers) {
         // Place directly on map at low opacity — don't cluster
-        const marker = L.marker([r.lat, r.lng], { icon }).addTo(map);
+      const marker = L.marker([r.lat, r.lng], { icon }).addTo(map);
         marker.setOpacity(0.20);
         marker.bindPopup(popup, { closeButton: false });
-        markersRef.current.push(marker);
+      markersRef.current.push(marker);
       } else {
         const marker = L.marker([r.lat, r.lng], { icon });
         marker.bindPopup(popup, { closeButton: false });
@@ -576,9 +576,9 @@ export default function MapView({
       // Create a prominent marker at the center of the selected ZIP
       const size = 24;
       const color = z.needScore >= 70 ? "#EF4444" : "#F59E0B";
-      const icon = L.divIcon({
-        className: "",
-        html: `<div style="
+        const icon = L.divIcon({
+          className: "",
+          html: `<div style="
           width:${size}px;height:${size}px;
           background:${color};
           border:3px solid #fff;
@@ -679,9 +679,9 @@ export default function MapView({
 
   return (
     <div className="absolute inset-0">
-      <div
-        ref={containerRef}
-        className="absolute inset-0"
+    <div
+      ref={containerRef}
+      className="absolute inset-0"
         style={{ background: "#f0ede7" }}
       />
 

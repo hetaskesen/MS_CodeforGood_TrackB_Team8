@@ -48,6 +48,19 @@ export default function Navbar({
           style={{ height: "20px", marginLeft: "-6px" }}
           onError={(e) => (e.target.style.display = "none")}
         />
+        <span
+          style={{
+            fontFamily: '"Aptos", "Aptos Light", "Segoe UI Variable", "Segoe UI", sans-serif',
+            fontSize: 25,
+            fontWeight: 300,
+            color: "#3D2200",
+            marginLeft: 2,
+            lineHeight: 1,
+            opacity: 0.9,
+          }}
+        >
+          Grove
+        </span>
         <div
           style={{
             width: "1px",

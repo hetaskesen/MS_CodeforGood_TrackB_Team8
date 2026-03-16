@@ -33,28 +33,66 @@ export default function AccessBarriersTab({ govData, filters }) {
 
   return (
     <div>
-      <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderLeft: "4px solid #EF4444", borderRadius: "0 12px 12px 0", padding: "14px 16px", marginBottom: 14 }}>
-        <div style={{ fontSize: 44, fontWeight: 800, color: "#DC2626", lineHeight: 1, marginBottom: 4 }}>
-          {total > 0 ? `${unavailPctDynamic}%` : "Data unavailable"}
+      {/* Availability card — three-zone layout */}
+      <div style={{
+        border: "0.5px solid var(--color-border-tertiary, #E5E7EB)",
+        borderRadius: "var(--border-radius-lg, 12px)",
+        overflow: "hidden",
+        marginBottom: 14,
+      }}>
+        {/* Zone 1 — Header */}
+        <div style={{
+          background: "var(--color-background-primary, #fff)",
+          padding: "1rem 1.5rem 0.75rem",
+          fontSize: 13,
+          fontWeight: 500,
+          color: "var(--color-text-primary, #111827)",
+          lineHeight: 1.4,
+        }}>
+          of resources in underserved ZIP codes are{" "}
+          <span style={{ color: "#A32D2D" }}>UNAVAILABLE</span>
         </div>
-        <div style={{ fontSize: 12, color: "#991B1B", fontWeight: 600, marginBottom: 10 }}>
-          of resources in underserved ZIP codes are UNAVAILABLE
+
+        {/* Zone 2 — Split stat row */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+          {/* Left half — Published */}
+          <div style={{ background: "#EAF3DE", padding: "1rem 1.5rem 1.25rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#3B6D11", flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: "#27500A", fontWeight: 500 }}>published</span>
+            </div>
+            <div style={{ fontSize: 40, fontWeight: 500, color: "#173404", lineHeight: 1 }}>
+              {available}
+            </div>
+            <div style={{ fontSize: 18, fontWeight: 500, color: "#3B6D11", marginTop: 4 }}>
+              {total > 0 ? `${availPct}%` : "—"}
+            </div>
+          </div>
+
+          {/* Right half — Unavailable */}
+          <div style={{ background: "#FCEBEB", padding: "1rem 1.5rem 1.25rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#A32D2D", flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: "#791F1F", fontWeight: 500 }}>unavailable</span>
+            </div>
+            <div style={{ fontSize: 40, fontWeight: 500, color: "#501313", lineHeight: 1 }}>
+              {unavailable}
+            </div>
+            <div style={{ fontSize: 18, fontWeight: 500, color: "#A32D2D", marginTop: 4 }}>
+              {total > 0 ? `${unavailPctDynamic}%` : "—"}
+            </div>
+          </div>
         </div>
-        <div style={{ display: "flex", height: 16, borderRadius: 4, overflow: "hidden", marginBottom: 7 }}>
-          <div style={{ width: `${availPct}%`, background: "#2D6A4F" }} />
-          <div style={{ width: `${unavailPctDynamic}%`, background: "#DC2626" }} />
-        </div>
-        <div style={{ display: "flex", gap: 14, fontSize: 10 }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, color: "#166534" }}>
-            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 1, background: "#2D6A4F" }} />
-            {available} published ({availPct}%)
-          </span>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, color: "#991B1B" }}>
-            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 1, background: "#DC2626" }} />
-            {unavailable} unavailable ({unavailPctDynamic}%)
-          </span>
-        </div>
-        <div style={{ fontSize: 11, color: "#991B1B", marginTop: 9, lineHeight: 1.5 }}>
+
+        {/* Zone 3 — Footer */}
+        <div style={{
+          background: "var(--color-background-primary, #fff)",
+          borderTop: "0.5px solid var(--color-border-tertiary, #E5E7EB)",
+          padding: "0.75rem 1.5rem",
+          fontSize: 12,
+          color: "var(--color-text-secondary, #6B7280)",
+          lineHeight: 1.5,
+        }}>
           This exceeds the city-wide offline rate of {govData?.systemStats?.unavailableRate ?? 0}% — high-need areas face disproportionately unreliable service.
         </div>
       </div>
