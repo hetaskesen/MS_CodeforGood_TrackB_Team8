@@ -78,6 +78,7 @@ export default function DashboardPage() {
 
   const [censusLayer, setCensusLayer] = useState(null);
   const [showCensusFilters, setShowCensusFilters] = useState(false);
+  const [exploreFilters, setExploreFilters] = useState(null);
   const [selectedResource, setSelectedResource] = useState(DEFAULT_RESOURCE);
   const [panelKey, setPanelKey] = useState(0);
   const mapInvalidateRef = useRef(null);
@@ -310,7 +311,11 @@ export default function DashboardPage() {
       case "explore":
         return (
           <div className="h-full w-full overflow-hidden flex flex-col">
-            <ExplorePage embedded={true} />
+            <ExplorePage
+              embedded={true}
+              persistedFilters={exploreFilters}
+              onFiltersChange={setExploreFilters}
+            />
           </div>
         );
       case "report-builder":

@@ -5,7 +5,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const MONO = { fontFamily: "'Courier New', monospace" };
+const MONO = { fontFamily: "'DM Sans', system-ui, sans-serif", fontWeight: 600, fontSize: 12, color: "#374151" };
 
 const DONUT_COLORS = ["#2D6A4F", "#52B788", "#95D5B2", "#D8F3DC", "#1B4332"];
 
@@ -19,22 +19,38 @@ const CARD = {
 
 const PRESETS = [500, 1000, 2000, 3500, 5000];
 
+const PRIORITY_ICONS = {
+  balanced: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 16, height: 16, flexShrink: 0 }}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 0 1-2.031.352 5.988 5.988 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.97Zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0 2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 0 1-2.031.352 5.989 5.989 0 0 1-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.97Z" />
+    </svg>
+  ),
+  need: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 16, height: 16, flexShrink: 0 }}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+    </svg>
+  ),
+  reach: (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 16, height: 16, flexShrink: 0 }}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+    </svg>
+  ),
+};
+
 const PRIORITIES = [
   {
     id: "balanced",
-    icon: "⚖",
     label: "Balanced portfolio",
     sub: "Mix of reach and need",
   },
   {
     id: "need",
-    icon: "⚡",
     label: "Highest need first",
     sub: "Focus on highest poverty areas",
   },
   {
     id: "reach",
-    icon: "🎯",
     label: "Maximum reach",
     sub: "Spread across most subscribers",
   },
@@ -139,6 +155,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
   return (
     <div className="funding-simulator-root" style={{ display: "flex", gap: 16, alignItems: "flex-start", padding: 24 }}>
       <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @media print {
           .funding-simulator-root .funding-simulator-config { display: none !important; }
           .funding-simulator-root .funding-simulator-results { flex: none !important; width: 100% !important; max-width: none !important; }
@@ -180,7 +197,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
               ...MONO,
             }}
           >
-            I_WANT_TO_FUND
+            Funding amount
           </div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {PRESETS.map((p) => (
@@ -270,7 +287,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
               ...MONO,
             }}
           >
-            FOCUS_AREA
+            Focus area
           </div>
           {[
             { value: "all",     label: "All of NYC" },
@@ -359,7 +376,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
               ...MONO,
             }}
           >
-            OPTIMIZE_FOR
+            Optimize for
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             {PRIORITIES.map((p) => (
@@ -387,7 +404,7 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
                     marginBottom: 2,
                   }}
                 >
-                  <span>{p.icon}</span>
+                  <span style={{ color: priority === p.id ? "#2D6A4F" : "#6B7280" }}>{PRIORITY_ICONS[p.id]}</span>
                   {p.label}
                 </div>
                 <div style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
@@ -417,7 +434,23 @@ export default function FundingSimulator({ donorData: donorDataProp }) {
             transition: "background 0.2s",
           }}
         >
-          {running ? "Running simulation…" : "▶ Run simulation"}
+          <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
+            {running ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: 15, height: 15, animation: "spin 1s linear infinite" }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                Running simulation…
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{ width: 15, height: 15 }}>
+                  <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+                </svg>
+                Run simulation
+              </>
+            )}
+          </span>
         </button>
       </div>
 

@@ -14,6 +14,7 @@ import {
   ReferenceArea,
 } from "recharts";
 import Footer from "./Footer";
+import { BOROUGH_COLORS } from "@/lib/constants";
 
 // ── Borough display names and colors (for charts) ─────────────────────────────
 const BOROUGH_KEY_TO_DISPLAY = {
@@ -23,13 +24,8 @@ const BOROUGH_KEY_TO_DISPLAY = {
   Bronx: "Bronx",
   StatenIsland: "Staten Island",
 };
-const BOROUGH_BG_COLOR = {
-  Bronx:          "#FCA5A5",
-  Brooklyn:       "#FCD34D",
-  Manhattan:      "#93C5FD",
-  Queens:         "#6EE7B7",
-  "Staten Island": "#C4B5FD",
-};
+// Borough colors — imported from @/lib/constants as BOROUGH_COLORS
+const BOROUGH_BG_COLOR = BOROUGH_COLORS;
 
 /**
  * Derive all donor-facing metrics from govData (Supabase resources + zip_demographics).

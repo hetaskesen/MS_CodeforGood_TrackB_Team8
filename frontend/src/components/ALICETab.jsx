@@ -219,8 +219,10 @@ function MissingMiddleCards({ flyTo, govData, filters }) {
                 SNAP-based metrics show {z.snapPerPantry.toLocaleString()} recipients per pantry here.
                 Accounting for ALICE households, true demand may be closer to{" "}
                 <strong>{z.alicePerPantry.toLocaleString()} households per pantry</strong> —
-                a {Math.round((z.alicePerPantry / z.snapPerPantry - 1) * 100 * -1 + 100)}% larger
-                population than government assistance data alone reveals.
+                {z.snapPerPantry > 0
+                  ? ` ${Math.round((z.alicePerPantry / z.snapPerPantry - 1) * 100)}% more households per pantry than SNAP estimates alone`
+                  : " significantly more households per pantry than SNAP estimates alone"}
+                .
               </div>
             )}
           </div>

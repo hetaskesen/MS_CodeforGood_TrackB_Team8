@@ -206,7 +206,7 @@ async function getGovData(req, res) {
         aliceHouseholds,
         alicePerPantry,
         aliceGap,
-        pantresPer10k: Number(z.pantries_per_10k) || 0,
+        pantriesPer10k: Number(z.pantries_per_10k) || 0,
         // Demographic access fields
         freshProduceCount: Number(z.fresh_produce_count) || 0,
         halalKosherCount: Number(z.halal_kosher_count) || 0,

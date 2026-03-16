@@ -5,7 +5,7 @@ const corsMiddleware = require("./middleware/cors");
 const { getResources } = require("./routes/resources");
 const { getResourcesMeta } = require("./routes/resourcesMeta");
 const { getOperatorPantries, getOperatorNeighborhood } = require("./routes/operatorPantries");
-const { createReview, getReviews, getReviewsSummary } = require("./routes/reviews");
+const { createReview, getReviews, getReviewsSummary, getReviewsAiSummary } = require("./routes/reviews");
 const { getNearbyResources } = require("./routes/nearbyResources");
 const { getGovData } = require("./routes/govData");
 
@@ -24,6 +24,7 @@ app.get("/api/gov/data", getGovData);
 
 app.post("/api/reviews", createReview);
 app.get("/api/reviews/summary", getReviewsSummary);
+app.get("/api/reviews/ai-summary", getReviewsAiSummary);
 app.get("/api/reviews", getReviews);
 
 app.get("/health", (req, res) => {

@@ -1,3 +1,28 @@
+export const BOROUGH_COLORS = {
+  Manhattan:      "#93C5FD",
+  Brooklyn:       "#FCD34D",
+  Queens:         "#6EE7B7",
+  Bronx:          "#FCA5A5",
+  "Staten Island": "#C4B5FD",
+  Unknown:        "#D1D5DB",
+};
+
+export const BOROUGH_DISPLAY_NAMES = [
+  "Manhattan",
+  "Brooklyn",
+  "Queens",
+  "Bronx",
+  "Staten Island",
+];
+
+export const BOROUGH_KEY_MAP = {
+  manhattan:    "Manhattan",
+  brooklyn:     "Brooklyn",
+  queens:       "Queens",
+  bronx:        "Bronx",
+  staten_island: "Staten Island",
+};
+
 export const CENSUS_LAYERS = {
   poverty: {
     label: "Poverty rate",

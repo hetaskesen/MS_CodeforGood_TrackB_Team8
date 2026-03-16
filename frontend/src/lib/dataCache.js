@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { createOnceEffect } from "@/hooks/useOnceEffect";
 
 const DataContext = createContext(null);
 
-// Module-level singleton guard — survives remounts and multiple DataProvider instances (e.g. Strict Mode, iframes)
-let globalFetchStarted = false;
+const useGlobalFetchOnce = createOnceEffect();
 
 export function DataProvider({ apiUrl, children }) {
   const [govData, setGovData] = useState(null);
@@ -14,9 +14,8 @@ export function DataProvider({ apiUrl, children }) {
   const [govLoading, setGovLoading] = useState(true);
   const [resourcesLoading, setResourcesLoading] = useState(true);
 
-  useEffect(() => {
-    if (!apiUrl || globalFetchStarted) return;
-    globalFetchStarted = true;
+  useGlobalFetchOnce(() => {
+    if (!apiUrl) return;
 
     // Fetch gov data + resources in parallel, once, on app load
     fetch(`${apiUrl}/api/gov/data`)

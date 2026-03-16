@@ -174,6 +174,7 @@ async function getReviewsSummary(req, res) {
     if (!byResource[id]) {
       byResource[id] = {
         resource_id: id,
+        resourceName: null,
         total_reviews: 0,
         rating_sum: 0,
         rating_count: 0,
@@ -201,7 +202,27 @@ async function getReviewsSummary(req, res) {
     if (row.rating >= 4 && row.share_text_with_resource && row.text) r.shareable_count++;
   }
 
-  const summary = Object.values(byResource)
+  const summaryMap = byResource;
+
+  // Fetch resource names for all resource_ids in summary
+  const resourceIds = Object.keys(summaryMap).filter(id => id !== "unspecified");
+  if (resourceIds.length > 0) {
+    const { data: resourceNames } = await supabase
+      .from("resources")
+      .select("id, raw")
+      .in("id", resourceIds);
+
+    if (resourceNames) {
+      resourceNames.forEach(r => {
+        const name = r.raw?.name || r.raw?.attributes?.name || null;
+        if (summaryMap[r.id] && name) {
+          summaryMap[r.id].resourceName = name;
+        }
+      });
+    }
+  }
+
+  const summary = Object.values(summaryMap)
     .map((r) => ({
       ...r,
       avg_rating: r.rating_count > 0 ? +(r.rating_sum / r.rating_count).toFixed(2) : null,
@@ -212,4 +233,80 @@ async function getReviewsSummary(req, res) {
   return res.json(summary);
 }
 
-module.exports = { createReview, getReviews, getReviewsSummary };
+/**
+ * GET /api/reviews/ai-summary
+ * Analyzes recent feedback text with Claude AI and returns themes, sentiment, and top issue.
+ */
+async function getReviewsAiSummary(req, res) {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return res.status(503).json({ error: "Supabase not configured" });
+  }
+
+  try {
+    const { data: reviews, error } = await supabase
+      .from("client_feedback")
+      .select("text, rating, wait_time_minutes, information_accurate, inaccuracy_types")
+      .not("text", "is", null)
+      .neq("text", "")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    if (!reviews?.length) {
+      return res.json({
+        themes: ["No feedback text available yet"],
+        sentiment: "No data",
+        topIssue: "None",
+        reviewCount: 0,
+        generatedAt: new Date().toISOString(),
+      });
+    }
+
+    const avgRating = reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length;
+    const inaccuracyTypes = reviews
+      .flatMap(r => r.inaccuracy_types || [])
+      .reduce((acc, t) => { acc[t] = (acc[t] || 0) + 1; return acc; }, {});
+    const topInaccuracy = Object.entries(inaccuracyTypes).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "none";
+
+    const context = `You are analyzing community feedback for NYC food pantries.
+
+Aggregate stats:
+- Total reviews analyzed: ${reviews.length}
+- Average rating: ${avgRating.toFixed(1)} / 5.0
+- Most reported inaccuracy: ${topInaccuracy}
+
+Recent feedback text samples:
+${reviews.slice(0, 30).map((r, i) => `${i + 1}. "${r.text}"`).join("\n")}
+
+Respond in JSON only with this exact structure:
+{
+  "themes": ["theme 1 in plain English", "theme 2", "theme 3"],
+  "sentiment": "one sentence describing overall community sentiment",
+  "topIssue": "the single most actionable improvement food banks could make"
+}`;
+
+    const Anthropic = require("@anthropic-ai/sdk");
+    const client = new Anthropic.default();
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 500,
+      messages: [{ role: "user", content: context }],
+    });
+
+    const responseText = message.content[0]?.text ?? "{}";
+    const clean = responseText.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(clean);
+
+    res.json({
+      ...parsed,
+      reviewCount: reviews.length,
+      generatedAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.error("AI summary error:", err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports = { createReview, getReviews, getReviewsSummary, getReviewsAiSummary };

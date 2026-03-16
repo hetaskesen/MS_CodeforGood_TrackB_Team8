@@ -408,12 +408,23 @@ export default function FeedbackForm({
 
     // Build a payload that exactly matches the ResourceReview JSON schema.
     // Fields that are conditional on attended/photo are nulled out when not applicable.
-    // authorId is a placeholder — replace with real user ID once auth is wired up.
+    // authorId uses a persistent session ID so multiple submissions from the same
+    // browser can be grouped in admin analytics, without requiring sign-in.
+    function getAnonymousId() {
+      const key = "lemontree_anon_id";
+      let id = sessionStorage.getItem(key);
+      if (!id) {
+        id = `anon_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    }
+
     const payload = {
       createdAt: new Date().toISOString(),
       deletedAt: null,
 
-      authorId: "anonymous", // TODO: replace with authenticated user ID
+      authorId: getAnonymousId(),
       resourceId: effectiveResourceId || "unspecified",
       occurrenceId: null,    // TODO: pass as prop when linking to a specific visit
       userId: null,

@@ -775,12 +775,12 @@ function TopNav() {
 
 /* ── Main content (needs useSearchParams — wrapped in Suspense) ──────── */
 
-function ExploreContent({ embedded = false }) {
+function ExploreContent({ embedded = false, persistedFilters = null, onFiltersChange = null }) {
   const router       = useRouter();
   const searchParams = useSearchParams();
 
   const { resources, resourcesMeta: meta, resourcesLoading: loading } = useAppData();
-  const [filters,          setFilters]          = useState(() => getInitialFilters(searchParams));
+  const [filters,          setFilters]          = useState(() => persistedFilters ?? getInitialFilters(searchParams));
   const [page,             setPage]             = useState(Number(searchParams.get("page")) || 1);
   const [selectedResource, setSelectedResource] = useState(null);
 
@@ -808,11 +808,15 @@ function ExploreContent({ embedded = false }) {
     );
   }, [embedded, filters, page, router]);
 
-  // Reset page to 1 whenever a filter changes
+  // Reset page to 1 whenever a filter changes; notify parent to persist when embedded
   const setFiltersAndReset = useCallback((updater) => {
-    setFilters(updater);
+    setFilters((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      if (onFiltersChange) onFiltersChange(next);
+      return next;
+    });
     setPage(1);
-  }, []);
+  }, [onFiltersChange]);
 
   // All filtering + sorting in one memoized pass — no extra API calls
   const filtered = useMemo(() => {
@@ -977,7 +981,7 @@ function ExploreWithParams() {
 
 /* ── Page export (Suspense boundary required for useSearchParams) ─────── */
 
-export default function ExplorePage({ embedded: embeddedProp }) {
+export default function ExplorePage({ embedded: embeddedProp, persistedFilters, onFiltersChange }) {
   return (
     <Suspense
       fallback={
@@ -989,7 +993,11 @@ export default function ExplorePage({ embedded: embeddedProp }) {
       }
     >
       {embeddedProp !== undefined ? (
-        <ExploreContent embedded={embeddedProp} />
+        <ExploreContent
+          embedded={embeddedProp}
+          persistedFilters={persistedFilters}
+          onFiltersChange={onFiltersChange}
+        />
       ) : (
         <ExploreWithParams />
       )}

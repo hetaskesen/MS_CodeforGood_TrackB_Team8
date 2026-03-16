@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
+import { createOnceEffect } from "@/hooks/useOnceEffect";
 
 /* ── colour helpers ──────────────────────────────────────────────────────── */
 function ratingBg(r) {
@@ -18,14 +19,6 @@ function ratingText(r) {
   if (r >= 2)   return "#92400E";
   return "#991B1B";
 }
-function ratingLabel(r) {
-  if (r == null) return "No ratings";
-  if (r >= 4)   return "Good";
-  if (r >= 3)   return "Fair";
-  if (r >= 2)   return "At risk";
-  return "Poor";
-}
-
 /* ── tiny shared primitives ──────────────────────────────────────────────── */
 function Badge({ children, bg, color, border }) {
   return (
@@ -42,11 +35,11 @@ function Badge({ children, bg, color, border }) {
   );
 }
 
-function SectionHeader({ emoji, title, subtitle, count }) {
+function SectionHeader({ icon, title, subtitle, count }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 18 }}>{emoji}</span>
+        {icon && <span style={{ display: "flex", alignItems: "center", color: "#6B7280" }}>{icon}</span>}
         <h2 style={{ fontSize: 16, fontWeight: 800, color: "#111827", margin: 0 }}>{title}</h2>
         {count != null && (
           <span style={{
@@ -74,6 +67,12 @@ function EmptyState({ message }) {
       {message}
     </div>
   );
+}
+
+function ratingLabel(rating) {
+  if (rating < 2.5) return { text: "Critical", bg: "#FEE2E2", color: "#991B1B" };
+  if (rating < 3.5) return { text: "Low", bg: "#FEF3C7", color: "#92400E" };
+  return { text: "Good", bg: "#DCFCE7", color: "#166534" };
 }
 
 function ReviewCard({ review, onAction, actionLabel, actionColor, actionBg, showResource = true }) {
@@ -115,15 +114,23 @@ function ReviewCard({ review, onAction, actionLabel, actionColor, actionBg, show
               display: "inline-block", marginBottom: 4, maxWidth: "100%",
               overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
             }}>
-              ID: {review.resource_id}
+              {review.resourceName ?? `Resource ${review.resource_id?.slice(0, 8)}...`}
             </span>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-            {review.rating != null && (
-              <Badge bg={ratingBg(review.rating)} color={ratingText(review.rating)}>
-                {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)} {review.rating}/5
-              </Badge>
-            )}
+            {review.rating != null && (() => {
+              const lbl = ratingLabel(review.rating);
+              return (
+                <>
+                  <Badge bg={ratingBg(review.rating)} color={ratingText(review.rating)}>
+                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)} {review.rating}/5
+                  </Badge>
+                  <span style={{ fontSize: 10, fontWeight: 700, background: lbl.bg, color: lbl.color, padding: "2px 6px", borderRadius: 4, marginLeft: 2 }}>
+                    {lbl.text}
+                  </span>
+                </>
+              );
+            })()}
             {review.attended === false && (
               <Badge bg="#FEF3C7" color="#92400E" border="#FDE68A">
                 Didn't attend{review.did_not_attend_reason ? ` — ${review.did_not_attend_reason.replace(/_/g, " ")}` : ""}
@@ -135,10 +142,16 @@ function ReviewCard({ review, onAction, actionLabel, actionColor, actionBg, show
               </Badge>
             )}
             {review.enter_raffle && (
-              <Badge bg="#FFF9E6" color="#854D0E" border="#FDE68A">🎟 Raffle</Badge>
+              <Badge bg="#FFF9E6" color="#854D0E" border="#FDE68A">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 11, height: 11, marginRight: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a3 3 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" /></svg>
+                Raffle
+              </Badge>
             )}
             {review.contact_follow_up && (
-              <Badge bg="#EFF6FF" color="#1D4ED8" border="#BFDBFE">💬 Follow-up</Badge>
+              <Badge bg="#EFF6FF" color="#1D4ED8" border="#BFDBFE">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 11, height: 11, marginRight: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" /></svg>
+                Follow-up
+              </Badge>
             )}
           </div>
         </div>
@@ -228,7 +241,7 @@ function QualitySection({ summary, apiUrl }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <SectionHeader
-        emoji="📉"
+        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>}
         title="Quality improvement"
         subtitle="Resources with low avg rating or high inaccuracy flags — click to drill into their reviews."
         count={atRisk.length}
@@ -249,14 +262,14 @@ function QualitySection({ summary, apiUrl }) {
               onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.07)")}
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                 <div>
                   <span style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
-                    ID: {s.resource_id}
+                    {s.resourceName ?? `Resource ${s.resource_id?.slice(0, 8)}...`}
                   </span>
                   <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
                     <Badge bg={ratingBg(s.avg_rating)} color={ratingText(s.avg_rating)}>
-                      ★ {s.avg_rating?.toFixed(1)} — {ratingLabel(s.avg_rating)}
+                      ★ {s.avg_rating?.toFixed(1)} — {s.avg_rating != null ? ratingLabel(s.avg_rating).text : "No ratings"}
                     </Badge>
                     <Badge bg="#F3F4F6" color="#374151">{s.total_reviews} reviews</Badge>
                     {s.inaccurate_count > 0 && (
@@ -309,7 +322,7 @@ function ClientSupportSection({ reviews }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <SectionHeader
-        emoji="💬"
+        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" /></svg>}
         title="Client support"
         subtitle="Negative experiences and clients who opted in for follow-up. Reach out to close the loop."
         count={flagged.length}
@@ -339,7 +352,7 @@ function PublicSharingSection({ reviews }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <SectionHeader
-        emoji="📣"
+        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" /></svg>}
         title="Ready to share publicly"
         subtitle="Positive reviews with sharing consent. Publish these on social feeds or the Lemontree website."
         count={shareable.length}
@@ -374,7 +387,7 @@ function ResourceUpdatesSection({ reviews }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <SectionHeader
-        emoji="🔧"
+        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" /></svg>}
         title="Resource updates needed"
         subtitle="Clients reported inaccurate listing information. Flag these for correction."
         count={groups.length}
@@ -459,7 +472,7 @@ function IncentiveSection({ reviews }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <SectionHeader
-        emoji="🎟"
+        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 18, height: 18 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a3 3 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" /></svg>}
         title="Incentive program"
         subtitle="Clients who opted into the raffle and top contributors by review count."
         count={entrants.length}
@@ -520,7 +533,12 @@ function IncentiveSection({ reviews }) {
               <span style={{ fontSize: 12, color: "#6B7280" }}>
                 {a.count} review{a.count > 1 ? "s" : ""}
               </span>
-              {a.raffle && <Badge bg="#FFF9E6" color="#854D0E" border="#FDE68A">🎟 Eligible</Badge>}
+              {a.raffle && (
+                <Badge bg="#FFF9E6" color="#854D0E" border="#FDE68A">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 11, height: 11, marginRight: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a3 3 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" /></svg>
+                  Eligible
+                </Badge>
+              )}
             </div>
           ))}
         </div>
@@ -538,13 +556,46 @@ function StatCards({ summary }) {
   const raffleCount    = summary.reduce((acc, s) => acc + (s.raffle_count || 0), 0);
   const shareableCount = summary.reduce((acc, s) => acc + (s.shareable_count || 0), 0);
 
+  const STAT_ICONS = {
+    reviews: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+      </svg>
+    ),
+    risk: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+      </svg>
+    ),
+    flags: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+      </svg>
+    ),
+    followup: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+      </svg>
+    ),
+    raffle: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a3 3 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+      </svg>
+    ),
+    share: (color) => (
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} style={{ width: 20, height: 20 }}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+      </svg>
+    ),
+  };
+
   const cards = [
-    { label: "Total reviews",     value: totalReviews,    bg: "#F0FDF4", text: "#166534", icon: "📝" },
-    { label: "Resources at risk", value: needsAttention,  bg: "#FEE2E2", text: "#991B1B", icon: "📉" },
-    { label: "Info flags",        value: inaccurateCount, bg: "#FEF3C7", text: "#92400E", icon: "🔧" },
-    { label: "Follow-up pending", value: followUpCount,   bg: "#EFF6FF", text: "#1D4ED8", icon: "💬" },
-    { label: "Raffle entrants",   value: raffleCount,     bg: "#FFFBEB", text: "#854D0E", icon: "🎟" },
-    { label: "Ready to share",    value: shareableCount,  bg: "#F5F3FF", text: "#5B21B6", icon: "📣" },
+    { label: "Total reviews",     value: totalReviews,    bg: "#F0FDF4", text: "#166534", iconKey: "reviews" },
+    { label: "Resources at risk", value: needsAttention,  bg: "#FEE2E2", text: "#991B1B", iconKey: "risk" },
+    { label: "Info flags",        value: inaccurateCount, bg: "#FEF3C7", text: "#92400E", iconKey: "flags" },
+    { label: "Follow-up pending", value: followUpCount,   bg: "#EFF6FF", text: "#1D4ED8", iconKey: "followup" },
+    { label: "Raffle entrants",   value: raffleCount,     bg: "#FFFBEB", text: "#854D0E", iconKey: "raffle" },
+    { label: "Ready to share",    value: shareableCount,  bg: "#F5F3FF", text: "#5B21B6", iconKey: "share" },
   ];
 
   return (
@@ -559,7 +610,7 @@ function StatCards({ summary }) {
           padding: "14px 16px",
           display: "flex", flexDirection: "column", gap: 2,
         }}>
-          <span style={{ fontSize: 20 }}>{c.icon}</span>
+          {STAT_ICONS[c.iconKey](c.text)}
           <span style={{ fontSize: 24, fontWeight: 800, color: c.text, lineHeight: 1.1 }}>{c.value}</span>
           <span style={{ fontSize: 11, color: c.text, opacity: 0.8 }}>{c.label}</span>
         </div>
@@ -600,7 +651,7 @@ function OverviewTab({ summary, allReviews, apiUrl }) {
               {summary.map((s, i) => (
                 <tr key={s.resource_id} style={{ background: i % 2 === 0 ? "#fff" : "#F9FAFB" }}>
                   <td style={{ padding: "9px 14px", fontWeight: 600, color: "#374151", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {s.resource_id}
+                    {s.resourceName ?? `Resource ${s.resource_id?.slice(0, 8)}...`}
                   </td>
                   <td style={{ padding: "9px 14px", textAlign: "center", color: "#374151" }}>{s.total_reviews}</td>
                   <td style={{ padding: "9px 14px", textAlign: "center" }}>
@@ -660,18 +711,119 @@ function OverviewTab({ summary, allReviews, apiUrl }) {
   );
 }
 
+/* ── AI Insights Tab ─────────────────────────────────────────────────────── */
+function AIInsightsTab({ apiUrl }) {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generateSummary = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetch(`${apiUrl}/api/reviews/ai-summary`).then(r => r.json());
+      setSummary(data);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ padding: "20px 24px" }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 4 }}>
+        AI Feedback Analysis
+      </div>
+      <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 16 }}>
+        Analyzes the most recent community feedback using Claude AI to identify patterns and actionable insights.
+      </div>
+      {!summary && !loading && (
+        <button
+          onClick={generateSummary}
+          style={{
+            background: "#2D6A4F", color: "#fff", border: "none",
+            borderRadius: 8, padding: "10px 20px", fontSize: 13,
+            fontWeight: 600, cursor: "pointer",
+          }}
+        >
+          Generate AI Summary
+        </button>
+      )}
+      {loading && (
+        <div style={{ color: "#6B7280", fontSize: 13, padding: 16 }}>
+          Analyzing feedback with Claude AI…
+        </div>
+      )}
+      {error && (
+        <div style={{ color: "#DC2626", fontSize: 12, padding: 12, background: "#FEF2F2", borderRadius: 8 }}>
+          Error: {error}
+        </div>
+      )}
+      {summary && (
+        <div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+            <div style={{ background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 10, padding: "14px 16px" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#166534", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+                Community Sentiment
+              </div>
+              <div style={{ fontSize: 13, color: "#374151", lineHeight: 1.6 }}>{summary.sentiment}</div>
+            </div>
+            <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 10, padding: "14px 16px" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#991B1B", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+                Top Actionable Issue
+              </div>
+              <div style={{ fontSize: 13, color: "#374151", lineHeight: 1.6 }}>{summary.topIssue}</div>
+            </div>
+          </div>
+          <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#6B7280", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 10 }}>
+              Recurring Themes
+            </div>
+            {(summary.themes || []).map((theme, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
+                <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#EEF2FF", color: "#4F46E5", fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {i + 1}
+                </span>
+                <span style={{ fontSize: 13, color: "#374151", lineHeight: 1.5 }}>{theme}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+            Based on {summary.reviewCount} reviews · Generated {new Date(summary.generatedAt).toLocaleString()}
+            {" · "}
+            <button onClick={generateSummary} style={{ fontSize: 11, color: "#6B7280", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>
+              Regenerate
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Tab definitions ─────────────────────────────────────────────────────── */
 const TABS = [
-  { id: "overview",  label: "Overview",          emoji: "📊" },
-  { id: "quality",   label: "Quality",            emoji: "📉" },
-  { id: "support",   label: "Client support",     emoji: "💬" },
-  { id: "sharing",   label: "Public sharing",     emoji: "📣" },
-  { id: "updates",   label: "Resource updates",   emoji: "🔧" },
-  { id: "incentive", label: "Incentive / Raffle", emoji: "🎟" },
+  { id: "overview",  label: "Overview" },
+  { id: "quality",   label: "Quality" },
+  { id: "support",   label: "Client support" },
+  { id: "sharing",   label: "Public sharing" },
+  { id: "updates",   label: "Resource updates" },
+  { id: "incentive", label: "Incentive / Raffle" },
+  { id: "insights",  label: "AI Insights" },
 ];
 
-// Module-level guard — survives AdminPanel remounts (e.g. tab switch, Strict Mode)
-let adminFetchStarted = false;
+const ADMIN_TAB_ICONS = {
+  overview: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>,
+  quality: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>,
+  support: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" /></svg>,
+  sharing: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" /></svg>,
+  updates: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>,
+  incentive: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a3 3 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" /></svg>,
+  insights: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 14, height: 14, marginRight: 5, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" /></svg>,
+};
+
+const useAdminFetchOnce = createOnceEffect();
 
 /* ── Main component ──────────────────────────────────────────────────────── */
 export default function AdminPanel() {
@@ -682,14 +834,12 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  useAdminFetchOnce(() => {
     if (!apiUrl) {
       setError("API URL not configured. Set NEXT_PUBLIC_API_URL in your .env.local file.");
       setLoading(false);
       return;
     }
-    if (adminFetchStarted) return;
-    adminFetchStarted = true;
     setLoading(true);
     setError(null);
     Promise.all([
@@ -724,7 +874,7 @@ export default function AdminPanel() {
       }}>
         <div style={{ paddingTop: 16, paddingBottom: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ fontSize: 20 }}>🛡️</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: 20, height: 20, color: "#2D6A4F", flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
             <h1 style={{ fontSize: 18, fontWeight: 800, color: "#111827", margin: 0 }}>
               Admin — Feedback Analytics
             </h1>
@@ -755,10 +905,10 @@ export default function AdminPanel() {
                 cursor: "pointer", whiteSpace: "nowrap",
                 transition: "color 0.15s",
                 fontFamily: "inherit",
-                display: "flex", alignItems: "center", gap: 5,
+                display: "flex", alignItems: "center",
               }}
             >
-              {t.emoji} {t.label}
+              {ADMIN_TAB_ICONS[t.id]} {t.label}
             </button>
           ))}
         </div>
@@ -791,6 +941,7 @@ export default function AdminPanel() {
             {tab === "sharing"   && <PublicSharingSection reviews={allReviews} />}
             {tab === "updates"   && <ResourceUpdatesSection reviews={allReviews} />}
             {tab === "incentive" && <IncentiveSection reviews={allReviews} />}
+            {tab === "insights"  && <AIInsightsTab apiUrl={apiUrl} />}
           </>
         )}
       </div>

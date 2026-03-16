@@ -6,13 +6,13 @@ import {
   ResponsiveContainer, Tooltip,
 } from "recharts";
 import Footer from "./Footer";
+import { createOnceEffect } from "@/hooks/useOnceEffect";
 
 const MiniMap = dynamic(() => import("./MiniMap"), { ssr: false });
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-// Module-level guard — survives OperatorPanel remounts (e.g. tab switch, Strict Mode)
-let pantryFetchStarted = false;
+const usePantryFetchOnce = createOnceEffect();
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -360,8 +360,16 @@ function ListingHealthCard({ resource }) {
         <div style={{ flex: "1 1 200px" }}>
           {checks.map((item) => (
             <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, fontSize: 13, color: "#374151" }}>
-              <span style={{ fontSize: 15, color: item.ok ? "#16A34A" : "#DC2626", fontWeight: 700, width: 18, flexShrink: 0 }}>
-                {item.ok ? "✓" : "✗"}
+              <span style={{ width: 18, flexShrink: 0, display: "flex", alignItems: "center" }}>
+                {item.ok ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style={{ width: 14, height: 14, color: "#16A34A" }}>
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style={{ width: 14, height: 14, color: "#DC2626" }}>
+                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                  </svg>
+                )}
               </span>
               {item.label}
             </div>
@@ -439,9 +447,7 @@ export default function OperatorPanel() {
   const [error, setError] = useState(null);
   const neighborhoodFetchedZipRef = useRef(null);
 
-  useEffect(() => {
-    if (pantryFetchStarted) return;
-    pantryFetchStarted = true;
+  usePantryFetchOnce(() => {
     fetch(`${API}/api/operator/pantries`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -457,7 +463,7 @@ export default function OperatorPanel() {
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  });
 
   const fetchNeighborhood = useCallback((resource) => {
     if (!resource?.zipCode) return;
@@ -566,7 +572,9 @@ export default function OperatorPanel() {
         </div>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 10, padding: "10px 16px", marginBottom: 20, fontSize: 13, color: "#991B1B" }}>
-          <span>⚠</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style={{ width: 14, height: 14, color: "#D97706", flexShrink: 0 }}>
+            <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+          </svg>
           Your resource is currently hidden from search results. Contact LemonTree to restore your listing.
         </div>
       )}
