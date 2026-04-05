@@ -1,3 +1,7 @@
+App Demo: https://ms-codefor-good-track-b-team8.vercel.app/ 
+
+App Demo Video: [YouTube Link](https://www.youtube.com/watch?v=F1wInckuaYM)
+
 # LemonTree Grove
 
 **Morgan Stanley Code for Good 2026 — Track B, Team 8**
