@@ -197,12 +197,12 @@ export default function LoginPageContent() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <img
-            src="https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg"
+            src="/logo.svg"
             alt="Lemontree logo"
             style={{ height: 34 }}
           />
           <img
-            src="https://www.foodhelpline.org/_next/static/media/wordmark.483cff36.svg"
+            src="/wordmark.svg"
             alt="Lemontree"
             style={{ height: 20, marginLeft: -6 }}
           />
@@ -496,12 +496,12 @@ export default function LoginPageContent() {
           <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <img
-                src="https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg"
+                src="/logo.svg"
                 alt="Lemontree logo"
                 style={{ height: 28 }}
               />
               <img
-                src="https://www.foodhelpline.org/_next/static/media/wordmark.483cff36.svg"
+                src="/wordmark.svg"
                 alt="Lemontree"
                 style={{ height: 16, marginLeft: -4 }}
               />

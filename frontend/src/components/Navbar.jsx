@@ -38,12 +38,12 @@ export default function Navbar({
       {/* LEFT — Logo + Wordmark + Explore link */}
       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
         <img
-          src="https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg"
+          src="/logo.svg"
           alt="Lemontree logo"
           style={{ height: "34px" }}
         />
         <img
-          src="https://www.foodhelpline.org/_next/static/media/wordmark.483cff36.svg"
+          src="/wordmark.svg"
           alt="Lemontree"
           style={{ height: "20px", marginLeft: "-6px" }}
           onError={(e) => (e.target.style.display = "none")}
