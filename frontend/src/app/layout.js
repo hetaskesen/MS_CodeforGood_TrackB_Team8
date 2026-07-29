@@ -5,7 +5,7 @@ export const metadata = {
   title: "LemonTree Grove",
   description: "Data insights platform for food access partners",
   icons: {
-    icon: "https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg",
+    icon: "/logo.svg",
   },
 };
 

@@ -10,12 +10,12 @@ export default function Footer() {
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-1.5">
               <img
-                src="https://www.foodhelpline.org/_next/static/media/logo.b8e851d7.svg"
+                src="/logo.svg"
                 alt="Lemontree logo"
                 className="h-7"
               />
               <img
-                src="https://www.foodhelpline.org/_next/static/media/wordmark.483cff36.svg"
+                src="/wordmark.svg"
                 alt="Lemontree"
                 className="h-4 -ml-1"
               />
